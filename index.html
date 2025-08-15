@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plasma Knowledge Tests</title>
+  <style>
+    :root {
+      --plasma-green: #0F2F29;
+      --plasma-white: #ffffff;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('back.png') no-repeat center center/cover;
+      color: var(--plasma-white);
+    }
+    #quiz-container {
+      background: var(--plasma-white);
+      color: #000;
+      width: 450px;
+      margin: 20px auto;
+      border-radius: 12px;
+      box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.3);
+      padding: 30px;
+      text-align: center;
+      min-height:60vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      cursor: pointer;
+      background: var(--plasma-green);
+      color: var(--plasma-white);
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+    .option {
+      border: 1px solid #ddd;
+      padding: 8px;
+      margin: 8px 0;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: background 0.2s;
+    }
+    .option:hover {
+      background: rgba(15,47,41,0.08);
+    }
+    .option.selected {
+      background: rgba(15,47,41,0.15);         /* plasma green tint */
+      border: 1px solid var(--plasma-green);   /* plasma border */
+    }
+  </style>
+</head>
+<body>
+
+  <div id="plasma-header" style="text-align:center; margin-top:40px;">
+    <img src="plasma-logo.png" alt="Plasma Logo" style="height:60px; display:block; margin:0 auto 10px; border-radius:50%;" />
+    <h2 style="margin:0; color:white;">Plasma Quiz</h2>
+    <p style="margin:0; color:white; font-size:14px;">How well do you know plasma?</p>
+  </div>
+
+  <div id="quiz-container"></div>
+
+<script>
+const questionsPool = [
+  {question:"What is Plasma?",options:["Fruit","Blockchain scaling solution","Car","Planet"],answer:"Blockchain scaling solution"},
+  {question:"Stablecoin means?",options:["Volatile coin","Stable value coin","Joke token","Stock"],answer:"Stable value coin"},
+  {question:"PlasmaFDN is building ____?",options:["Game","Stablecoin Chain","Book","Phone"],answer:"Stablecoin Chain"},
+  {question:"How many questions are in the real quiz?",options:["10","20","30","40"],answer:"20"},
+  {question:"Where will we host?",options:["AWS","Vercel","Google Drive","Nowhere"],answer:"Vercel"}
+];
+
+let selectedQuestions = [], currentQuestionIndex = 0, score = 0, selectedOption = null;
+
+function startQuiz(){
+  selectedQuestions = questionsPool.sort(() => 0.5 - Math.random()).slice(0,20);
+  currentQuestionIndex = 0; score = 0; selectedOption = null;
+  showQuestion();
+}
+
+function showQuestion(){
+  selectedOption = null;
+  const quizDiv = document.getElementById("quiz-container");
+  const q = selectedQuestions[currentQuestionIndex];
+  quizDiv.innerHTML = `
+    <p id="question" style="font-weight:bold;">${q.question}</p>
+    <div id="options"></div>
+    <button onclick="nextQuestion()">Next</button>
+  `;
+  const optionsDiv=document.getElementById("options");
+  q.options.forEach(opt=>{
+    const d=document.createElement("div");
+    d.className="option";
+    d.innerText=opt;
+    d.onclick=()=>selectOption(d,opt);
+    optionsDiv.appendChild(d);
+  });
+}
+
+function selectOption(div,opt){
+  selectedOption=opt;
+  document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+  div.classList.add("selected");
+}
+
+function nextQuestion(){
+  if(!selectedOption){ alert("Please select an option first."); return; }
+  if(selectedOption===selectedQuestions[currentQuestionIndex].answer){ score++; }
+  currentQuestionIndex++;
+  if(currentQuestionIndex < selectedQuestions.length){ showQuestion(); }
+  else{ finishQuiz(); }
+}
+
+function finishQuiz(){
+  const percent = Math.round((score/selectedQuestions.length)*100);
+  document.getElementById("quiz-container").innerHTML = `
+    <div style="
+      background:white;
+      border-radius:12px;
+      padding:40px 30px;
+      box-shadow:0px 4px 20px rgba(0,0,0,0.1);
+      max-width:520px;
+      margin:0 auto;
+      text-align:center;
+    ">
+      <h2 style="color:#000; margin-top:0;">Quiz Complete!</h2>
+      <div style="font-size:56px; color:var(--plasma-green); font-weight:700;">${percent}%</div>
+      <p style="color:#000;">You scored ${score} out of ${selectedQuestions.length} questions correctly</p>
+      <button 
+        onclick="startQuiz()" 
+        style="
+          display:block;
+          width:100%;
+          padding:15px;
+          font-size:18px;
+          background:var(--plasma-green);
+          color:white;
+          border-radius:12px;
+          margin-top:25px;
+          border:none;
+          cursor:pointer;
+          font-weight:600;
+        ">
+        🔄 Try Again
+      </button>
+    </div>
+  `;
+}
+
+startQuiz();
+</script>
+</body>
+</html>
