@@ -11,7 +11,7 @@ body{
   margin:0;font-family:"Futura","Montserrat",sans-serif;
   background:var(--plasma-green);color:var(--plasma-white);
   display:flex;justify-content:center;align-items:center;min-height:100vh;
-  overflow:hidden;
+  overflow:hidden;transition: background 0.8s ease;
 }
 #landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
 button{
@@ -59,6 +59,13 @@ button:hover{transform:scale(1.05);}
 }
 
 /* Score box styles */
+@keyframes bounceUp {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -65%) scale(1.1); }
+  70% { transform: translate(-50%, -60%) scale(0.95); }
+  100% { transform: translate(-50%, -60%) scale(1); }
+}
+
 #score-box{
   position:absolute;
   top:50%;
@@ -79,7 +86,7 @@ button:hover{transform:scale(1.05);}
   transform: translate(-50%, -50%) scale(1.05);
 }
 #score-box.move-up{
-  transform: translate(-50%, -60%) scale(1);
+  animation: bounceUp 1s forwards;
 }
 </style>
 </head>
@@ -159,7 +166,7 @@ function startQuiz(m){
   document.getElementById("modes").style.display="none";
   const quiz = document.getElementById("quiz-container");
   quiz.style.display="block";
-  setTimeout(()=>{quiz.classList.add("show");},50); // transition fade-in
+  setTimeout(()=>{quiz.classList.add("show");},50);
   if(m==="easy"){selectedQ=[...QUESTIONS.easy]; timerLen=20;}
   else if(m==="intermediate"){selectedQ=[...QUESTIONS.intermediate]; timerLen=15;}
   else {selectedQ=[...QUESTIONS.hard]; timerLen=10;}
@@ -198,7 +205,6 @@ function nextQuestion(auto){
   if(selectedOpt===selectedQ[idx].a)score++;
   selectedOpt=null; idx++;
   
-  // fade-out/in effect
   const quiz=document.getElementById("quiz-container");
   quiz.style.opacity=0;
   setTimeout(()=>{
@@ -215,6 +221,8 @@ function finish(){
   const box=document.getElementById("score-box");
   box.innerHTML=`<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
   
+  document.body.style.background = "#0F2F29"; // optional: keep dark green
+  setTimeout(()=>{document.body.style.background="#0F6B4A";},50); // animate background to brighter green
   box.classList.add("show");
   setTimeout(()=>{box.classList.add("move-up");},2000);
 }
