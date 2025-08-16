@@ -6,13 +6,13 @@
 <title>Plasma Knowledge Tests</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
-:root { --plasma-green:#0F2F29; --plasma-white:#ffffff; --selected-green: rgba(15,47,41,0.25);}
+:root { --plasma-green:#0F2F29; --plasma-white:#ffffff;}
 body{
   margin:0;font-family:"Futura","Montserrat",sans-serif;
   background:var(--plasma-green);color:var(--plasma-white);
   display:flex;justify-content:center;align-items:center;min-height:100vh;
   overflow:hidden;
-  transition: background 0.8s ease;
+  transition: background 1s ease;
 }
 #landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
 button{
@@ -28,6 +28,8 @@ button:hover{transform:scale(1.05);}
 }
 
 #quiz-container{
+  position: relative;
+  z-index: 10;
   background:var(--plasma-white);color:#000;padding:30px;border-radius:15px;
   box-shadow:0 4px 14px rgba(0,0,0,.3);display:none;overflow:hidden;
   transition: opacity 0.6s ease;
@@ -41,10 +43,8 @@ button:hover{transform:scale(1.05);}
 .option{
   border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer;
   transition: all 0.3s ease;
-  position: relative; /* ensures clickable area is correct */
-  z-index: 1;
 }
-.option.selected{background: var(--selected-green); border-color: var(--plasma-green);}
+.option.selected{background:rgba(15,47,41,.35);border-color:var(--plasma-green);}
 .option:hover{transform:scale(1.02);}
 
 .progress-container{
@@ -61,34 +61,42 @@ button:hover{transform:scale(1.05);}
   position:absolute;left:50%;top:3px;transform:translateX(-50%);color:#000;font-size:14px;
 }
 
-/* Score box style */
 #score-box{
   position:absolute;
   top:50%;
   left:50%;
   transform: translate(-50%, -50%);
-  width:380px;
-  height:200px;
   background: url('1.png') no-repeat center center/cover;
   color:#fff;
-  padding:25px 30px;
-  border-radius:20px;
-  box-shadow:0 6px 20px rgba(0,0,0,.4);
-  font-size:18px;
-  opacity:0;
+  padding:25px 40px;
+  border-radius:15px;
+  width:400px;
+  height:220px;
   text-align:left;
-  display:flex;
-  flex-direction: column;
-  justify-content: space-between;
+  opacity:0;
+  box-shadow:0 6px 20px rgba(0,0,0,.4);
 }
 
 #score-box.show{
   opacity:1;
 }
 
+#score-box h2, #score-box h3, #score-box p, #score-box button{
+  margin: 8px 0;
+}
+
 #score-box button{
-  align-self: flex-start;
-  margin-top: 15px;
+  display:block;
+  margin-top:12px;
+  background:#fff;color:#0F2F29;
+  padding:10px 25px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+#score-box button:hover{
+  transform: scale(1.05);
 }
 </style>
 </head>
@@ -124,16 +132,16 @@ button:hover{transform:scale(1.05);}
 <script>
 const QUESTIONS={
   easy:[
-    {q:"What color is plasma typically?", o:["Red","Green","Blue","Yellow"], a:"Red"},
-    {q:"Plasma is considered?", o:["Solid","Liquid","Gas","Ionized gas"], a:"Ionized gas"},
-    {q:"Most common plasma in universe?", o:["Stars","Flames","Neon lights","Lightning"], a:"Stars"},
-    {q:"Plasma conducts?", o:["Electricity","Nothing","Heat","Light"], a:"Electricity"},
-    {q:"Plasma contains?", o:["Atoms","Ions & electrons","Molecules","Neutrons"], a:"Ions & electrons"},
-    {q:"Neon signs glow because of?", o:["Plasma","Gas","Metal","Water"], a:"Plasma"},
-    {q:"Plasma is affected by?", o:["Gravity","Magnetic fields","Sound","Air"], a:"Magnetic fields"},
-    {q:"Plasma temperature is usually?", o:["Low","Medium","High","Frozen"], a:"High"},
-    {q:"Lightning is an example of?", o:["Gas","Plasma","Liquid","Solid"], a:"Plasma"},
-    {q:"Stars are mainly made of?", o:["Hydrogen plasma","Iron","Oxygen","Helium"], a:"Hydrogen plasma"}
+    {q:"What is Plasma?", o:["Fourth state of matter","A type of battery","A planet","A virus"], a:"Fourth state of matter"},
+    {q:"Plasma is mostly made of?", o:["Atoms","Ions and electrons","Neutrons","Molecules"], a:"Ions and electrons"},
+    {q:"Plasma conducts?", o:["Nothing","Electricity","Water","Air"], a:"Electricity"},
+    {q:"Which is a plasma device?", o:["Refrigerator","TV screen","Microwave","Fluorescent lamp"], a:"Fluorescent lamp"},
+    {q:"Plasma can be found in?", o:["Sun","Chair","Phone","Rock"], a:"Sun"},
+    {q:"Plasma is affected by?", o:["Magnetism","Gravity only","Sound","Taste"], a:"Magnetism"},
+    {q:"Neon lights use?", o:["Gas","Plasma","Liquid","Solid"], a:"Plasma"},
+    {q:"Plasma temperature?", o:["Cold","Hot","Room Temp","Frozen"], a:"Hot"},
+    {q:"Plasma in nature?", o:["Stars","Tables","Rocks","Soil"], a:"Stars"},
+    {q:"Plasma glow color?", o:["Blue","Red","Green","Depends on gas"], a:"Depends on gas"}
   ],
   intermediate:[
     {q:"Intermediate Q1?", o:["A","B","C","D"], a:"A"},
@@ -185,10 +193,8 @@ function showQ(){
   document.getElementById("question").innerText=q.q;
   const opt=document.getElementById("options");
   opt.innerHTML="";
-  q.o.forEach((o,i)=>{
-    const d=document.createElement("div"); 
-    d.className="option"; 
-    d.innerText=o;
+  q.o.forEach(o=>{
+    const d=document.createElement("div"); d.className="option"; d.innerText=o;
     d.onclick=()=>{
       selectedOpt=o;
       document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));
@@ -233,12 +239,15 @@ function finish(){
   else if(p<100) msg="pretrillions confirmed.";
   else msg="Trillions.";
 
-  const box=document.getElementById("score-box");
-  box.innerHTML=`<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
-  box.classList.add("show");
+  document.body.style.background = "#0F2F29"; // gently transition back to green
 
-  // Transition background gently to green
-  document.body.style.background = "#0F2F29";
+  const box=document.getElementById("score-box");
+  box.innerHTML=`<h2>You scored ${score}/${selectedQ.length}</h2>
+                 <h3>${p}%</h3>
+                 <p><strong>${msg}</strong></p>
+                 <button onclick="location.reload()">Restart</button>`;
+  
+  box.classList.add("show");
 }
 </script>
 </body>
