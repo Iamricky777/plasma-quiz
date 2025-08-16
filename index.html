@@ -58,7 +58,7 @@ button:hover{transform:scale(1.05);}
   position:absolute;left:50%;top:3px;transform:translateX(-50%);color:#000;font-size:14px;
 }
 
-/* Score box as credit card with gentle background transition */
+/* Score box with background image and left-aligned content */
 #score-box{
   position:absolute;
   top:50%;
@@ -68,19 +68,30 @@ button:hover{transform:scale(1.05);}
   max-width:90%;
   padding:25px 30px;
   border-radius:15px;
-  background:#0F2F29;
+  background: url('1.png') no-repeat center center/cover;
   color:#fff;
-  text-align:center;
+  text-align:left;
   font-size:18px;
   opacity:0;
   box-shadow:0 6px 20px rgba(0,0,0,.4);
   transition: opacity 0.6s ease, background 1s ease;
 }
 
-/* Mobile-friendly */
-@media (max-width:768px){
-  #score-box{width:90%;}
+/* Make restart button left-aligned and match card style */
+#score-box button{
+  margin-top:15px;
+  background: rgba(255,255,255,0.8);
+  color: var(--plasma-green);
+  border:none;
+  padding:10px 20px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:16px;
 }
+#score-box button:hover{
+  background: rgba(255,255,255,1);
+}
+
 </style>
 </head>
 <body>
@@ -113,30 +124,36 @@ button:hover{transform:scale(1.05);}
 <div id="score-box"></div>
 
 <script>
-const QUESTIONS={
+const QUESTIONS = {
   easy:[
-    {q:"Dummy Question 1?", o:["A","B","C","D"], a:"A"},
-    {q:"Dummy Question 2?", o:["A","B","C","D"], a:"B"},
-    {q:"Dummy Question 3?", o:["A","B","C","D"], a:"C"},
-    {q:"Dummy Question 4?", o:["A","B","C","D"], a:"D"},
-    {q:"Dummy Question 5?", o:["A","B","C","D"], a:"A"},
-    {q:"Dummy Question 6?", o:["A","B","C","D"], a:"B"},
-    {q:"Dummy Question 7?", o:["A","B","C","D"], a:"C"},
-    {q:"Dummy Question 8?", o:["A","B","C","D"], a:"D"},
-    {q:"Dummy Question 9?", o:["A","B","C","D"], a:"A"},
-    {q:"Dummy Question 10?", o:["A","B","C","D"], a:"B"}
+    {q:"Plasma is the ___ state of matter?", o:["First","Second","Fourth","Third"], a:"Fourth"},
+    {q:"Plasma is mostly made of?", o:["Atoms","Ions & electrons","Molecules","Neutrons"], a:"Ions & electrons"},
+    {q:"The Sun is made of?", o:["Gas","Liquid","Plasma","Solid"], a:"Plasma"},
+    {q:"Plasma conducts?", o:["Electricity","Nothing","Water","Light"], a:"Electricity"},
+    {q:"Lightning is a type of?", o:["Gas","Plasma","Water","Ice"], a:"Plasma"},
+    {q:"Neon signs glow due to?", o:["Plasma","Gas","Liquid","Solid"], a:"Plasma"},
+    {q:"Aurora borealis is?", o:["Gas","Liquid","Plasma","Solid"], a:"Plasma"},
+    {q:"Plasma can be created using?", o:["Heat","Pressure","Magnetism","Electricity"], a:"Electricity"},
+    {q:"Plasma TVs use?", o:["Plasma","LED","LCD","OLED"], a:"Plasma"},
+    {q:"Plasma is influenced by?", o:["Gravity","Electric & Magnetic fields","Sound","None"], a:"Electric & Magnetic fields"}
   ],
   intermediate:[
-    {q:"Intermediate 1?", o:["A","B","C","D"], a:"A"},
-    {q:"Intermediate 2?", o:["A","B","C","D"], a:"B"}
+    {q:"Intermediate Q1?", o:["A","B","C","D"], a:"A"},
+    {q:"Intermediate Q2?", o:["A","B","C","D"], a:"B"},
+    {q:"Intermediate Q3?", o:["A","B","C","D"], a:"C"},
+    {q:"Intermediate Q4?", o:["A","B","C","D"], a:"D"},
+    {q:"Intermediate Q5?", o:["A","B","C","D"], a:"A"},
   ],
   hard:[
-    {q:"Hard 1?", o:["A","B","C","D"], a:"A"},
-    {q:"Hard 2?", o:["A","B","C","D"], a:"B"}
+    {q:"Hard Q1?", o:["A","B","C","D"], a:"A"},
+    {q:"Hard Q2?", o:["A","B","C","D"], a:"B"},
+    {q:"Hard Q3?", o:["A","B","C","D"], a:"C"},
+    {q:"Hard Q4?", o:["A","B","C","D"], a:"D"},
+    {q:"Hard Q5?", o:["A","B","C","D"], a:"A"},
   ]
 };
 
-let mode,selectedQ,timerLen,idx=0,score=0,selectedOpt=null,timerInt;
+let mode, selectedQ, timerLen, idx=0, score=0, selectedOpt=null, timerInt;
 
 function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
 function exitQuiz(){ if(confirm("Are you sure you want to exit the quiz?")){clearInterval(timerInt); location.reload(); } }
@@ -198,14 +215,12 @@ function finish(){
   const p=Math.round((score/selectedQ.length)*100);
   let msg=p>=80?"Plasma Champion!":p>=50?"Not bad":"Keep learning!";
   
-  // Animate background transition
-  document.body.style.transition="background 1s ease";
-  document.body.style.background="var(--plasma-green)";
-
   const box=document.getElementById("score-box");
   box.innerHTML=`<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
   
-  box.style.opacity=1;
+  box.style.opacity = 1;
+  document.body.style.transition = "background 1s ease";
+  document.body.style.background = "var(--plasma-green)";
 }
 </script>
 </body>
