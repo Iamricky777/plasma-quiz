@@ -9,7 +9,6 @@
       --plasma-green: #0F2F29;
       --plasma-white: #ffffff;
     }
-
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -18,208 +17,211 @@
       background-attachment: fixed;
       color: var(--plasma-white);
     }
-
+    #main {
+      text-align: center;
+      width:80%;
+      max-width:500px;
+      margin:100px auto;
+      animation: slideup 0.8s;
+    }
+    button {
+      display:block;
+      margin:15px auto;
+      padding:12px 25px;
+      cursor:pointer;
+      background:var(--plasma-green);
+      color:var(--plasma-white);
+      border:none;
+      border-radius:12px;
+      font-size:18px;
+    }
     #quiz-container {
       background: var(--plasma-white);
-      color: #000;
-      width: 90%;
-      max-width: 450px;
-      margin: 20px auto;
-      border-radius: 12px;
-      box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.3);
-      padding: 30px;
-      text-align: center;
-      min-height: 60vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      box-sizing: border-box;
-      overflow: hidden;
+      color:#000;
+      width:90%;
+      max-width:500px;
+      margin:30px auto;
+      border-radius:14px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.3);
+      padding:25px;
+      display:none;
+      overflow:hidden;
     }
+    .option {border:1px solid #ddd; padding:12px; margin:8px 0; border-radius:8px; cursor:pointer;}
+    .option:hover {background:rgba(15,47,41,0.08);}
+    .option.selected{background:rgba(15,47,41,0.15);border:1px solid var(--plasma-green)}
+    @keyframes slide-q{from{transform: translateX(-40px); opacity:0} to{transform:translateX(0); opacity:1}}
+    .slide-question{animation:slide-q .4s;}
 
-    button {
-      margin-top: 15px;
-      padding: 12px 20px;
-      cursor: pointer;
-      background: var(--plasma-green);
-      color: var(--plasma-white);
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      transition: transform 0.1s;
-    }
-    button:active {
-      transform: scale(0.97);
-    }
-
-    .option {
-      border: 1px solid #ddd;
-      padding: 12px;
-      margin: 8px 0;
-      cursor: pointer;
-      border-radius: 12px;
-      transition: background 0.2s;
-      word-wrap: break-word;
-    }
-    .option:hover {
-      background: rgba(15,47,41,0.08);
-    }
-    .option.selected {
-      background: rgba(15,47,41,0.15);
-      border: 1px solid var(--plasma-green);
-    }
-
-    /* Slide in animation */
-    @keyframes slideIn {
-      from { transform: translateX(-40px); opacity: 0; }
-      to   { transform: translateX(0); opacity: 1; }
-    }
-    .slide-question { animation: slideIn 0.4s ease; }
-
-    /* Progress bar */
-    .progress-container {
-      height: 8px;
-      background: #ddd;
-      border-radius: 6px;
-      margin-top: 15px;
-      width: 100%;
-      overflow: hidden;
-    }
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: var(--plasma-green);
-      border-radius: inherit;
-      transition: width 0.3s ease;
-    }
-
-    @media (max-width: 500px) {
-      #quiz-container { padding: 20px; }
-      .option { font-size: 14px; padding: 10px; }
-      button { font-size: 15px; padding: 10px 15px; }
-      #plasma-header img { height: 45px; }
-      #plasma-header h2 { font-size: 20px; }
-      #plasma-header p { font-size: 12px; }
-    }
+    .progress-container{height:8px;background:#ddd;border-radius:6px;margin-top:15px;overflow:hidden;}
+    .progress-bar{height:100%;width:0;background:var(--plasma-green);transition:width .3s;}
+    @keyframes slideup{from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)}}
   </style>
 </head>
 <body>
-
-  <div id="plasma-header" style="text-align:center; margin:20px 0;">
-    <img src="plasma-logo.png" alt="Plasma Logo" style="height:60px; display:block; margin:0 auto 10px; border-radius:50%;" />
-    <h2 style="margin:0; color:white;">Plasma Quiz</h2>
-    <p style="margin:0; color:white; font-size:14px;">How well do you know plasma?</p>
+<div id="landing">
+  <div id="main">
+    <h1>How well do you know Plasma?</h1>
+    <button onclick="showModes()">Start Quiz</button>
   </div>
+</div>
 
-  <div id="quiz-container">
-    <h3 id="question"></h3>
-    <div id="options"></div>
-    <div class="progress-container"><div class="progress-bar" id="pbar"></div></div>
-    <button onclick="nextQuestion()">Next</button>
-    <p id="result"></p>
-  </div>
+<div id="modes" style="display:none;text-align:center;margin-top:80px;">
+  <h2>Select Difficulty</h2>
+  <button onclick="startQuiz('easy')">Easy</button>
+  <button onclick="startQuiz('intermediate')">Intermediate</button>
+  <button onclick="startQuiz('hard')">Hard</button>
+</div>
+
+<div id="quiz-container">
+  <h3 id="question"></h3>
+  <div id="options"></div>
+  <div class="progress-container"><div class="progress-bar" id="pbar"></div></div>
+  <p id="timer" style="margin-top:10px;"></p>
+  <button onclick="nextQuestion()">Next</button>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
-const questionsPool = [
-  { question: "What is Plasma?", options: ["Fruit", "Blockchain scaling solution", "Car", "Planet"], answer: "Blockchain scaling solution" },
-  { question: "Stablecoin means?", options: ["Volatile coin", "Stable value coin", "Joke token", "Stock"], answer: "Stable value coin" },
-  { question: "PlasmaFDN is building ____?", options: ["Game", "Stablecoin Chain", "Book", "Phone"], answer: "Stablecoin Chain" },
-  { question: "How many questions are in the real quiz?", options: ["10", "20", "30", "40"], answer: "20" },
-  { question: "Where will we host?", options: ["AWS", "Vercel", "Google Drive", "Nowhere"], answer: "Vercel" }
-];
+const QUESTIONS = {
+  easy:[
+    {q:"Plasma is closest to which superhero’s power?",o:["Flash","Iron Man","Thor","Batman"],a:"Thor"},
+    {q:"What color is often used to represent Plasma?",o:["Pink","Green","Orange","Purple"],a:"Green"},
+    {q:"Which animal would BEST represent Plasma? ",o:["Snail","Lion","Tortoise","Cat"],a:"Lion"},
+    {q:"Plasma vibes are mostly…",o:["Chaotic","Slow","Stable","Boring"],a:"Stable"},
+    {q:"Plasma mascot could be a…",o:["Rocket","Potato","Sword","Chair"],a:"Rocket"},
+    {q:"Which sound fits Plasma?",o:["Boom!","Meow","TikTok","Splash"],a:"Boom!"},
+    {q:"Plasma is more like a…",o:["Storm","Feather","Book","Shoe"],a:"Storm"},
+    {q:"Best drink for Plasma devs?",o:["Tea","Coffee","Soda","Water"],a:"Coffee"},
+    {q:"Plasma feels…",o:["Lazy","Energetic","Sleepy","Gloomy"],a:"Energetic"},
+    {q:"Plasma fans usually wear…",o:["Cap","Helmet","Suit","Hoodie"],a:"Hoodie"}
+  ],
+  intermediate:[
+    {q:"Plasma is a layer-2 scaling solution for…",o:["Bitcoin","Ethereum","Dogecoin","Solana"],a:"Ethereum"},
+    {q:"Plasma is often compared to a…",o:["Subway","Tree","Highway","Bridge"],a:"Highway"},
+    {q:"Vitalik helped propose Plasma in…",o:["2017","2014","2020","2012"],a:"2017"},
+    {q:"Plasma chains bundle transactions into…",o:["Blocks","Documents","Images","Letters"],a:"Blocks"},
+    {q:"Main goal of Plasma is to reduce…",o:["Gas fees","Fun","Security","Time"],a:"Gas fees"},
+    {q:"Plasma uses periodic…",o:["Check-ins","Emails","Phone calls","Tweets"],a:"Check-ins"},
+    {q:"Operator of a Plasma chain is also called a…",o:["Baker","Driver","Aggregator","Pilot"],a:"Aggregator"},
+    {q:"Plasma deals with…",o:["Smartphones","Smart contracts","Smart TVs","Smart cars"],a:"Smart contracts"},
+    {q:"Exit mechanism helps users…",o:["Fly","Teleport","Move funds back","Dance"],a:"Move funds back"},
+    {q:"Plasma aims to improve…",o:["Scalability","Hair","Food","Gravity"],a:"Scalability"},
+    {q:"Data availability is mostly…",o:["On-chain","Off-chain","In notebook","On paper"],a:"Off-chain"},
+    {q:"Plasma challenges are submitted within…",o:["7 days","7 minutes","7 months","7 hours"],a:"7 days"},
+    {q:"Plasma blocks are posted to…",o:["Ethereum Mainnet","Bitcoin","Polygon","Discord"],a:"Ethereum Mainnet"},
+    {q:"Users interact with a Plasma chain through…",o:["Wallet","TV remote","Mic","Key"],a:"Wallet"},
+    {q:"Plasma is NOT used for…",o:["Scaling","Games","Payments","Cooking"],a:"Cooking"},
+    {q:"Plasma encourages…",o:["Low fees","High gas","No users","Spam"],a:"Low fees"},
+    {q:"Proofs in Plasma are…",o:["Cryptographic","Magical","Verbal","Drawn"],a:"Cryptographic"},
+    {q:"Rollups evolved after Plasma around…",o:["2020","2005","2010","1999"],a:"2020"},
+    {q:"Plasma was co-proposed by…",o:["Vitalik & Joseph","Elon & Bezos","Satoshi & Hal","Fred & George"],a:"Vitalik & Joseph"},
+    {q:"Plasma improves…",o:["Throughput","Rain","Furniture","Weather"],a:"Throughput"}
+  ],
+  hard:[
+    {q:"Plasma uses which type of commitment?",o:["Merkle","SHA","BLS","RSA"],a:"Merkle"},
+    {q:"In Plasma, users must monitor the chain to…",o:["Detect exits","Sleep","Back up","Mine"],a:"Detect exits"},
+    {q:"Exit priority is usually based on…",o:["Age","Size","Position","Color"],a:"Position"},
+    {q:"Plasma MVP design was criticized for lack of…",o:["Data availability","Food","Air","Gas"],a:"Data availability"},
+    {q:"Fraud proofs in Plasma are submitted if…",o:["Invalid block","Party","Holiday","Sun"],a:"Invalid block"},
+    {q:"Plasma Cash introduced concept of…",o:["Unique coins","Cakes","Cars","Cats"],a:"Unique coins"},
+    {q:"Plasma Debit supports…",o:["Partial payments","Recipes","Songs","Pets"],a:"Partial payments"},
+    {q:"More Viable Plasma was proposed by…",o:["Vitalik","Joseph","Mina","Doge"],a:"Vitalik"},
+    {q:"Plasma generally assumes honest…",o:["Operator","Chef","Guard","Robot"],a:"Operator"},
+    {q:"Users must submit exits within…",o:["Challenge period","Birthday","Lunar cycle","Weekends"],a:"Challenge period"},
+    {q:"Plasma maps child chain to…",o:["Mainnet","Laptop","Router","Mobile"],a:"Mainnet"},
+    {q:"Double spends are prevented by…",o:["Proofs","Cookies","Keys","Apps"],a:"Proofs"},
+    {q:"Checkpointing improves…",o:["Finality","Taste","Sound","Resolution"],a:"Finality"},
+    {q:"Plasma requires users to be…",o:["Online","Offline","Sleeping","Rich"],a:"Online"},
+    {q:"Child chain exits are challenged by…",o:["Anyone","Only devs","Only whales","Only miners"],a:"Anyone"},
+    {q:"Plasma is less popular than…",o:["Rollups","Phones","Cats","Socks"],a:"Rollups"},
+    {q:"Plasma Cash had issue with…",o:["Mass exits","Tea","Shoes","Rain"],a:"Mass exits"},
+    {q:"UTXO style chosen in Plasma Cash is similar to…",o:["Bitcoin","Tezos","Ada","BSC"],a:"Bitcoin"},
+    {q:"What replaces PoW in Plasma chain?",o:["Operator","Bank","Farmer","Robot"],a:"Operator"},
+    {q:"Users run a…",o:["Light client","Plane","Shop","Zoo"],a:"Light client"},
+    {q:"Data withholding attacks exploit lack of…",o:["Availability","Taste","Speed","Spice"],a:"Availability"},
+    {q:"Contracts used in Plasma are…",o:["Root chain","Salon","Bridge","Farm"],a:"Root chain"},
+    {q:"Required to exit from Plasma is…",o:["Proof","Passport","Pen","Key"],a:"Proof"},
+    {q:"Plasma exited funds can be spent after…",o:["Finality period","1 min","1 yr","1 sec"],a:"Finality period"},
+    {q:"Which part runs off-chain?",o:["Transactions","Block header","Hash","Nonce"],a:"Transactions"},
+    {q:"Which keeps track of exits?",o:["Exit queue","Twitter","Whatsapp","Telegram"],a:"Exit queue"},
+    {q:"Plasma is a child of…",o:["Ethereum","NEAR","Arbitrum","Cosmos"],a:"Ethereum"},
+    {q:"Mass exit problem happens when…",o:["Many exit at once","One exit","No exit","Too happy"],a:"Many exit at once"},
+    {q:"Checkpointing happens every…",o:["Interval","Century","Day","Hour"],a:"Interval"},
+    {q:"What prevents invalid exit?",o:["Challenge","Hug","Call","Drink"],a:"Challenge"},
+    {q:"What makes Plasma scalable?",o:["Off chain tx","Bigger blocks","Coffee","NFTs"],a:"Off chain tx"}
+  ]
+};
 
-let selectedQuestions = [];
-let currentQuestionIndex = 0;
-let score = 0;
-let selectedOption = null;
+let currentMode, selectedQuestions, timerLength, timerInterval;
+let currentIndex=0,score=0,selectedOpt=null;
 
-function startQuiz() {
-  selectedQuestions = questionsPool.sort(() => 0.5 - Math.random()).slice(0, 20);
-  currentQuestionIndex = 0;
-  score = 0;
-  selectedOption = null;
-  document.getElementById("quiz-container").style.background = "var(--plasma-white)";
-  document.getElementById("quiz-container").style.color = "#000";
-  document.getElementById("quiz-container").innerHTML = `
-    <h3 id="question"></h3>
-    <div id="options"></div>
-    <div class="progress-container"><div class="progress-bar" id="pbar"></div></div>
-    <button onclick="nextQuestion()">Next</button>
-    <p id="result"></p>
-  `;
-  showQuestion();
+function showModes(){
+  document.getElementById("landing").style.display="none";
+  document.getElementById("modes").style.display="block";
 }
 
-function showQuestion() {
-  selectedOption = null;
-  document.getElementById("result").innerText = "";
+function startQuiz(mode){
+  currentMode=mode;
+  document.getElementById("modes").style.display="none";
+  document.getElementById("quiz-container").style.display="block";
+  // pick questions & timer per mode
+  if(mode==="easy"){ selectedQuestions=[...QUESTIONS.easy]; timerLength=20;}
+  else if(mode==="intermediate"){ selectedQuestions=[...QUESTIONS.intermediate]; timerLength=15;}
+  else { selectedQuestions=[...QUESTIONS.hard]; timerLength=10;}
+  currentIndex=0;score=0; selectedOpt=null;
+  showQ();
+}
 
-  const questionObj = selectedQuestions[currentQuestionIndex];
-  document.getElementById("question").innerText = questionObj.question;
-  document.getElementById("question").className = "slide-question";
-
-  const optionsDiv = document.getElementById("options");
-  optionsDiv.innerHTML = "";
-  questionObj.options.forEach(option => {
-    const div = document.createElement("div");
-    div.classList.add("option");
-    div.innerText = option;
-    div.onclick = () => selectOption(div, option);
-    optionsDiv.appendChild(div);
+function showQ(){
+  if(timerInterval) clearInterval(timerInterval);
+  if(currentIndex>=selectedQuestions.length){ finish(); return; }
+  
+  const q=selectedQuestions[currentIndex];
+  document.getElementById("question").innerText=q.q;
+  document.getElementById("question").className="slide-question";
+  const optDiv=document.getElementById("options");
+  optDiv.innerHTML="";
+  q.o.forEach(o=>{
+    const d=document.createElement("div");
+    d.className="option"; d.innerText=o;
+    d.onclick=()=>{selectedOpt=o;document.querySelectorAll(".option").forEach(e=>e.classList.remove("selected"));d.classList.add("selected")}
+    optDiv.appendChild(d);
   });
 
-  // update progress
-  const percent = Math.round(((currentQuestionIndex) / selectedQuestions.length) * 100);
-  document.getElementById("pbar").style.width = percent + "%";
+  // progress
+  document.getElementById("pbar").style.width= Math.round((currentIndex/selectedQuestions.length)*100)+"%";
+
+  // timer
+  let t=timerLength;
+  document.getElementById("timer").innerText="Time: "+t+"s";
+  timerInterval=setInterval(()=>{
+    t--; document.getElementById("timer").innerText="Time: "+t+"s";
+    if(t<=0){ clearInterval(timerInterval); nextQuestion(true); }
+  },1000);
 }
 
-function selectOption(div, option) {
-  selectedOption = option;
-  document.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
-  div.classList.add("selected");
+function nextQuestion(autoSkip){
+  if(!autoSkip && !selectedOpt){ alert("Please select an option"); return; }
+  clearInterval(timerInterval);
+  if(selectedOpt===selectedQuestions[currentIndex].a) score++;
+  currentIndex++; selectedOpt=null;
+  showQ();
 }
 
-function nextQuestion() {
-  if (!selectedOption) {
-    alert("Please select an option first.");
-    return;
-  }
-
-  const current = selectedQuestions[currentQuestionIndex];
-  if (selectedOption === current.answer) score++;
-
-  currentQuestionIndex++;
-  if (currentQuestionIndex < selectedQuestions.length) {
-    showQuestion();
-  } else {
-    finishQuiz();
-  }
-}
-
-function finishQuiz() {
-  const percentage = Math.round((score / selectedQuestions.length) * 100);
-  let message = "";
-  if (percentage >= 80) {
-    message = "Plasma Champion!";
-    confetti();
-  } else if (percentage >= 50) {
-    message = "Not bad at all!";
-  } else {
-    message = "Keep Learning!";
-  }
-
-  document.getElementById("quiz-container").style.background = "var(--plasma-green)";
-  document.getElementById("quiz-container").style.color = "var(--plasma-white)";
-  document.getElementById("quiz-container").innerHTML = `
-    <h2>You scored ${score} out of ${selectedQuestions.length}</h2>
-    <h3>${percentage}%</h3>
-    <p><strong>${message}</strong></p>
-    <button onclick="startQuiz()">Try Again</button>
+function finish(){
+  clearInterval(timerInterval);
+  let perc=Math.round((score/selectedQuestions.length)*100);
+  let msg= perc>=80?"Plasma Champion!":perc>=50?"Not bad":"Keep learning!";
+  if(perc>=80) confetti();
+  
+  document.getElementById("quiz-container").innerHTML=`
+     <h2>You scored ${score}/${selectedQuestions.length}</h2>
+     <h3>${perc}%</h3>
+     <p><strong>${msg}</strong></p>
+     <button onclick="location.reload()">Restart</button>
   `;
 }
-
-startQuiz();
 </script>
 </body>
 </html>
