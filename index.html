@@ -48,6 +48,7 @@
       box-shadow:0 4px 14px rgba(0,0,0,0.3);
       display:none;
       overflow:hidden;
+      position:relative;
     }
     .option{
       border:1px solid #ddd;
@@ -59,8 +60,21 @@
     .option.selected{background:rgba(15,47,41,0.15);border-color:var(--plasma-green);}
     @keyframes slideQ{from{transform:translateX(-40px);opacity:0}to{transform:translateX(0);opacity:1}}
     .slide-question{animation:slideQ .4s}
-    .progress-container{height:8px;background:#ddd;border-radius:6px;margin:18px 0;overflow:hidden;}
+    .progress-container{height:8px;background:#ddd;border-radius:6px;margin:18px 0;overflow:hidden;position:relative;}
     .progress-bar{height:100%;width:0;background:var(--plasma-green);transition:width .3s;}
+    .progress-text{position:absolute; top:-22px; right:0; font-size:14px; color:#000;}
+    .exit-top{
+      position:absolute;
+      top:10px;
+      right:10px;
+      background:#ff4c4c;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      padding:6px 12px;
+      font-size:12px;
+      cursor:pointer;
+    }
   </style>
 </head>
 <body>
@@ -78,12 +92,15 @@
 </div>
 
 <div id="quiz-container">
+  <button class="exit-top" onclick="exitQuiz()">Exit</button>
   <h3 id="question"></h3>
   <div id="options"></div>
-  <div class="progress-container"><div id="pbar" class="progress-bar"></div></div>
+  <div class="progress-container">
+    <div id="pbar" class="progress-bar"></div>
+    <span id="progressLabel" class="progress-text"></span>
+  </div>
   <p id="timer"></p>
   <button onclick="nextQuestion()">Next</button>
-  <button onclick="exitQuiz()">Exit Quiz</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
@@ -155,7 +172,12 @@ function showQ(){
     d.onclick=()=>{selectedOpt=o; document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected")); d.classList.add("selected");};
     opt.appendChild(d);
   });
+
+  // update progress text + bar
   document.getElementById("pbar").style.width=(idx/selectedQ.length)*100+"%";
+  document.getElementById("progressLabel").innerText=(idx+1)+"/"+selectedQ.length;
+
+  // timer countdown
   let t=timerLen; document.getElementById("timer").innerText="Time: "+t+"s";
   timerInt=setInterval(()=>{t--; document.getElementById("timer").innerText="Time: "+t+"s"; if(t<=0){clearInterval(timerInt); nextQuestion(true);}},1000);
 }
