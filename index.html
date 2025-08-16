@@ -34,6 +34,7 @@
       flex-direction: column;
       justify-content: center;
       box-sizing: border-box;
+      overflow: hidden;
     }
 
     button {
@@ -68,6 +69,30 @@
       border: 1px solid var(--plasma-green);
     }
 
+    /* Slide in animation */
+    @keyframes slideIn {
+      from { transform: translateX(-40px); opacity: 0; }
+      to   { transform: translateX(0); opacity: 1; }
+    }
+    .slide-question { animation: slideIn 0.4s ease; }
+
+    /* Progress bar */
+    .progress-container {
+      height: 8px;
+      background: #ddd;
+      border-radius: 6px;
+      margin-top: 15px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--plasma-green);
+      border-radius: inherit;
+      transition: width 0.3s ease;
+    }
+
     @media (max-width: 500px) {
       #quiz-container { padding: 20px; }
       .option { font-size: 14px; padding: 10px; }
@@ -89,10 +114,12 @@
   <div id="quiz-container">
     <h3 id="question"></h3>
     <div id="options"></div>
+    <div class="progress-container"><div class="progress-bar" id="pbar"></div></div>
     <button onclick="nextQuestion()">Next</button>
     <p id="result"></p>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
 const questionsPool = [
   { question: "What is Plasma?", options: ["Fruit", "Blockchain scaling solution", "Car", "Planet"], answer: "Blockchain scaling solution" },
@@ -111,6 +138,16 @@ function startQuiz() {
   selectedQuestions = questionsPool.sort(() => 0.5 - Math.random()).slice(0, 20);
   currentQuestionIndex = 0;
   score = 0;
+  selectedOption = null;
+  document.getElementById("quiz-container").style.background = "var(--plasma-white)";
+  document.getElementById("quiz-container").style.color = "#000";
+  document.getElementById("quiz-container").innerHTML = `
+    <h3 id="question"></h3>
+    <div id="options"></div>
+    <div class="progress-container"><div class="progress-bar" id="pbar"></div></div>
+    <button onclick="nextQuestion()">Next</button>
+    <p id="result"></p>
+  `;
   showQuestion();
 }
 
@@ -120,9 +157,10 @@ function showQuestion() {
 
   const questionObj = selectedQuestions[currentQuestionIndex];
   document.getElementById("question").innerText = questionObj.question;
+  document.getElementById("question").className = "slide-question";
+
   const optionsDiv = document.getElementById("options");
   optionsDiv.innerHTML = "";
-
   questionObj.options.forEach(option => {
     const div = document.createElement("div");
     div.classList.add("option");
@@ -130,6 +168,10 @@ function showQuestion() {
     div.onclick = () => selectOption(div, option);
     optionsDiv.appendChild(div);
   });
+
+  // update progress
+  const percent = Math.round(((currentQuestionIndex) / selectedQuestions.length) * 100);
+  document.getElementById("pbar").style.width = percent + "%";
 }
 
 function selectOption(div, option) {
@@ -143,8 +185,9 @@ function nextQuestion() {
     alert("Please select an option first.");
     return;
   }
+
   const current = selectedQuestions[currentQuestionIndex];
-  if (selectedOption === current.answer) { score++; }
+  if (selectedOption === current.answer) score++;
 
   currentQuestionIndex++;
   if (currentQuestionIndex < selectedQuestions.length) {
@@ -156,16 +199,18 @@ function nextQuestion() {
 
 function finishQuiz() {
   const percentage = Math.round((score / selectedQuestions.length) * 100);
-
   let message = "";
   if (percentage >= 80) {
     message = "Plasma Champion!";
+    confetti();
   } else if (percentage >= 50) {
     message = "Not bad at all!";
   } else {
     message = "Keep Learning!";
   }
 
+  document.getElementById("quiz-container").style.background = "var(--plasma-green)";
+  document.getElementById("quiz-container").style.color = "var(--plasma-white)";
   document.getElementById("quiz-container").innerHTML = `
     <h2>You scored ${score} out of ${selectedQuestions.length}</h2>
     <h3>${percentage}%</h3>
