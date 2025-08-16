@@ -4,140 +4,229 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plasma Knowledge Tests</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
-    :root { --plasma-green:#0F2F29; --plasma-white:#ffffff;}
-    body{
-      margin:0;font-family:"Futura","Montserrat",sans-serif;
-      background:var(--plasma-green);color:var(--plasma-white);
-      display:flex;justify-content:center;align-items:center;min-height:100vh;
+    :root {
+      --plasma-green: #0F2F29;
+      --plasma-white: #ffffff;
     }
-    #landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
-    button{
-      background:var(--plasma-white);color:var(--plasma-green);border:none;
-      font-family:inherit;padding:12px 25px;margin:12px auto;border-radius:10px;cursor:pointer;
+
+    body {
+      margin: 0;
+      font-family: Futura, Arial, sans-serif;
+      background: url('back.png') no-repeat center center/cover;
+      color: var(--plasma-white);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
-    #quiz-container{
-      background:var(--plasma-white);color:#000;padding:30px;border-radius:15px;box-shadow:0 4px 14px rgba(0,0,0,.3);display:none;overflow:hidden;
+
+    #quiz-container {
+      background: var(--plasma-white);
+      color: #000;
+      width: 90%;
+      max-width: 450px;
+      margin: 20px auto;
+      border-radius: 12px;
+      box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.3);
+      padding: 30px;
+      text-align: center;
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      position: relative;
     }
-    .option{border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer;}
-    .option.selected{background:rgba(15,47,41,.15);border-color:var(--plasma-green);}
-    .progress-container{height:8px;background:#ddd;border-radius:6px;margin:18px 0;position:relative;}
-    .progress-bar{height:100%;width:0;background:var(--plasma-green);transition:width .3s;}
-    .progress-text{position:absolute;left:50%;top:-20px;transform:translateX(-50%);color:#000;font-size:14px;}
+
+    #quiz-header {
+      margin-bottom: 20px;
+    }
+
+    .option {
+      border: 1px solid #ddd;
+      padding: 12px;
+      margin: 8px 0;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: background 0.2s;
+      word-wrap: break-word;
+    }
+
+    .option:hover {
+      background: rgba(15,47,41,0.08);
+    }
+
+    .option.selected {
+      background: rgba(15,47,41,0.15);
+      border: 1px solid var(--plasma-green);
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 14px 40px;
+      cursor: pointer;
+      background: var(--plasma-green);
+      color: var(--plasma-white);
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      transition: transform 0.1s;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    #exit-btn {
+      margin-top: 10px;
+      background: #000;
+      float: right;
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+
+    /* Progress bar */
+    .progress-container {
+      position: relative;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      margin: 10px 0 20px;
+      width: 100%;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--plasma-green);
+      width: 0%;
+      border-radius: 10px;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #000;
+      font-size: 14px;
+      pointer-events: none;
+      font-weight: bold;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 500px) {
+      #quiz-container {
+        padding: 20px;
+      }
+
+      .option {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 12px 30px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div id="quiz-container">
+    <div id="quiz-header">
+      <h2>Plasma Quiz</h2>
+      <p>How well do you know plasma?</p>
+    </div>
 
-<div id="landing">
-  <h1>How well do you know Plasma?</h1>
-  <button onclick="showModes()">Start Quiz</button>
-</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+      <div class="progress-text" id="progress-text">0/0</div>
+    </div>
 
-<div id="modes" style="display:none;">
-  <h2>Select Difficulty</h2>
-  <button onclick="startQuiz('easy')">Easy</button>
-  <button onclick="startQuiz('intermediate')">Intermediate</button>
-  <button onclick="startQuiz('hard')">Hard</button>
-</div>
+    <div id="question"></div>
+    <div id="options"></div>
 
-<div id="quiz-container">
-  <h3 id="question"></h3>
-  <div id="options"></div>
-  <div class="progress-container">
-    <div id="pbar" class="progress-bar"></div>
-    <span id="progressLabel" class="progress-text"></span>
+    <button onclick="nextQuestion()">Next</button>
+    <button id="exit-btn" onclick="exitQuiz()">Exit Quiz</button>
   </div>
-  <p id="timer"></p>
-  <button onclick="nextQuestion()">Next</button>
-  <div style="text-align:right;">
-    <button onclick="exitQuiz()" style="background:#ff4c4c;color:#fff;margin-top:4px;">Exit Quiz</button>
-  </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-<script>
-const QUESTIONS={easy:[
-{q:"Plasma is closest to which superhero’s power?",o:["Flash","Iron Man","Thor","Batman"],a:"Thor"},
-{q:"What color is often used to represent Plasma?",o:["Pink","Green","Orange","Purple"],a:"Green"},
-{q:"Which animal would BEST represent Plasma?",o:["Snail","Lion","Tortoise","Cat"],a:"Lion"},
-{q:"Plasma vibes are mostly…",o:["Chaotic","Slow","Stable","Boring"],a:"Stable"},
-{q:"Plasma mascot could be a…",o:["Rocket","Potato","Sword","Chair"],a:"Rocket"},
-{q:"Which sound fits Plasma?",o:["Boom!","Meow","TikTok","Splash"],a:"Boom!"},
-{q:"Plasma is more like a…",o:["Storm","Feather","Book","Shoe"],a:"Storm"},
-{q:"Best drink for Plasma devs?",o:["Tea","Coffee","Soda","Water"],a:"Coffee"},
-{q:"Plasma feels…",o:["Lazy","Energetic","Sleepy","Gloomy"],a:"Energetic"},
-{q:"Plasma fans usually wear…",o:["Cap","Helmet","Suit","Hoodie"],a:"Hoodie"}],
-intermediate:[
-{q:"Plasma is a layer-2 scaling solution for…",o:["Bitcoin","Ethereum","Dogecoin","Solana"],a:"Ethereum"},
-{q:"Vitalik helped propose Plasma in…",o:["2017","2014","2020","2012"],a:"2017"},
-{q:"Main goal of Plasma is to reduce…",o:["Gas fees","Fun","Security","Time"],a:"Gas fees"},
-{q:"Plasma challenges are submitted within…",o:["7 days","7 minutes","7 months","7 hours"],a:"7 days"},
-{q:"Plasma cells bundle transactions into…",o:["Blocks","Documents","Images","Letters"],a:"Blocks"},
-{q:"Operator of a Plasma chain is also called a…",o:["Baker","Driver","Aggregator","Pilot"],a:"Aggregator"},
-{q:"Exit mechanism helps users…",o:["Fly","Teleport","Move funds back","Dance"],a:"Move funds back"},
-{q:"Data availability is mostly…",o:["On-chain","Off-chain","In notebook","On paper"],a:"Off-chain"},
-{q:"Plasma deals with…",o:["Smartphones","Smart contracts","Smart TVs","Smart cars"],a:"Smart contracts"},
-{q:"Plasma was co-proposed by…",o:["Vitalik & Joseph","Elon & Bezos","Satoshi & Hal","Fred & George"],a:"Vitalik & Joseph"}],
-hard:[
-{q:"Plasma uses which type of commitment?",o:["Merkle","SHA","BLS","RSA"],a:"Merkle"},
-{q:"In Plasma, users must monitor the chain to…",o:["Detect exits","Sleep","Backup","Mine"],a:"Detect exits"},
-{q:"Exit priority is usually based on…",o:["Age","Size","Position","Color"],a:"Position"},
-{q:"Plasma Cash introduced concept of…",o:["Unique coins","Cakes","Cars","Cats"],a:"Unique coins"},
-{q:"Double spends are prevented by…",o:["Proofs","Cookies","Keys","Apps"],a:"Proofs"},
-{q:"More Viable Plasma was proposed by…",o:["Vitalik","Joseph","Mina","Doge"],a:"Vitalik"},
-{q:"Plasma generally assumes honest…",o:["Operator","Chef","Guard","Robot"],a:"Operator"},
-{q:"Plasma requires users to be…",o:["Online","Offline","Sleeping","Rich"],a:"Online"},
-{q:"Checkpointing improves…",o:["Finality","Taste","Sound","Resolution"],a:"Finality"},
-{q:"Child chain exits are challenged by…",o:["Anyone","Only devs","Only whales","Only miners"],a:"Anyone"}]};
+  <script>
+    const questionsPool = [
+      {question: "What is Plasma?", options:["Fruit","Blockchain scaling solution","Car","Planet"], answer:"Blockchain scaling solution"},
+      {question: "Stablecoin means?", options:["Volatile coin","Stable value coin","Joke token","Stock"], answer:"Stable value coin"},
+      {question: "PlasmaFDN is building ____?", options:["Game","Stablecoin Chain","Book","Phone"], answer:"Stablecoin Chain"},
+      {question: "How many questions are in the real quiz?", options:["10","20","30","40"], answer:"20"},
+      {question: "Where will we host?", options:["AWS","Vercel","Google Drive","Nowhere"], answer:"Vercel"},
+      // Add 25 more dummy questions
+    ];
 
-let mode,selectedQ,timerLen,idx=0,score=0,selectedOpt=null,timerInt;
+    let selectedQuestions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedOption = null;
 
-function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
-function exitQuiz(){ if(confirm("Are you sure you want to exit the quiz?")){clearInterval(timerInt); location.reload(); } }
-function startQuiz(m){
-  mode=m; idx=0; score=0;
-  document.getElementById("modes").style.display="none";
-  document.getElementById("quiz-container").style.display="block";
-  if(m==="easy"){selectedQ=[...QUESTIONS.easy]; timerLen=20;}
-  else if(m==="intermediate"){selectedQ=[...QUESTIONS.intermediate]; timerLen=15;}
-  else {selectedQ=[...QUESTIONS.hard]; timerLen=10;}
-  showQ();
-}
-function showQ(){
-  if(timerInt) clearInterval(timerInt);
-  if(idx>=selectedQ.length){finish(); return;}
-  const q=selectedQ[idx];
-  document.getElementById("quiz-container").style.background="var(--plasma-white)";
-  document.getElementById("quiz-container").style.color="#000";
-  document.getElementById("question").innerText=q.q;
-  document.getElementById("question").className="slide-question";
-  const opt=document.getElementById("options");
-  opt.innerHTML="";
-  q.o.forEach(o=>{
-    const d=document.createElement("div"); d.className="option"; d.innerText=o;
-    d.onclick=()=>{selectedOpt=o;document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));d.classList.add("selected");};
-    opt.appendChild(d);
-  });
-  document.getElementById("pbar").style.width=(idx/selectedQ.length)*100+"%";
-  document.getElementById("progressLabel").innerText=(idx+1)+"/"+selectedQ.length;
-  let t=timerLen;document.getElementById("timer").innerText="Time: "+t+"s";
-  timerInt=setInterval(()=>{t--;document.getElementById("timer").innerText="Time: "+t+"s";if(t<=0){clearInterval(timerInt);nextQuestion(true);}},1000);
-}
-function nextQuestion(auto){
-  if(!auto && !selectedOpt){alert("Please select an option");return;}
-  if(selectedOpt===selectedQ[idx].a)score++;
-  selectedOpt=null;idx++;showQ();
-}
-function finish(){
-  clearInterval(timerInt);
-  const p=Math.round((score/selectedQ.length)*100);
-  let msg=p>=80?"Plasma Champion!":p>=50?"Not bad":"Keep learning!";
-  document.getElementById("quiz-container").style.background=`url('1.png') no-repeat center center/cover`;
-  document.getElementById("quiz-container").style.color="#fff";
-  document.getElementById("quiz-container").innerHTML=
- `<div style="text-align:left;padding:20px;"><h2 style="margin-bottom:4px;">You scored ${score}/${selectedQ.length}</h2><h3 style="margin:4px 0;">${p}%</h3><p style="margin:8px 0;"><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button></div>`;
-}
-</script>
+    function startQuiz() {
+      selectedQuestions = questionsPool.sort(()=>0.5-Math.random()).slice(0,questionsPool.length);
+      currentQuestionIndex = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      selectedOption = null;
+      const questionObj = selectedQuestions[currentQuestionIndex];
+      document.getElementById("question").innerText = questionObj.question;
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+
+      questionObj.options.forEach(option => {
+        const div = document.createElement("div");
+        div.classList.add("option");
+        div.innerText = option;
+        div.onclick = () => selectOption(div, option);
+        optionsDiv.appendChild(div);
+      });
+
+      updateProgress();
+    }
+
+    function selectOption(div, option) {
+      selectedOption = option;
+      document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+      div.classList.add("selected");
+    }
+
+    function nextQuestion() {
+      if(!selectedOption){ alert("Please select an option first."); return; }
+      if(selectedOption === selectedQuestions[currentQuestionIndex].answer){ score++; }
+      currentQuestionIndex++;
+      if(currentQuestionIndex < selectedQuestions.length){ showQuestion(); }
+      else{ finishQuiz(); }
+    }
+
+    function updateProgress() {
+      const progress = ((currentQuestionIndex)/selectedQuestions.length)*100;
+      document.getElementById("progress-bar").style.width = progress + "%";
+      document.getElementById("progress-text").innerText = `${currentQuestionIndex}/${selectedQuestions.length}`;
+    }
+
+    function finishQuiz() {
+      document.getElementById("quiz-container").innerHTML = `
+        <h2>You scored ${score} / ${selectedQuestions.length}</h2>
+        <p>${Math.round((score/selectedQuestions.length)*100)}%</p>
+        <p>Keep learning!</p>
+        <button onclick="startQuiz()">Restart Quiz</button>
+      `;
+    }
+
+    function exitQuiz() {
+      document.getElementById("quiz-container").innerHTML = `<h2>Quiz exited.</h2>`;
+    }
+
+    startQuiz();
+  </script>
 </body>
 </html>
