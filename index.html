@@ -19,6 +19,7 @@
       justify-content:center;
       align-items:center;
       min-height:100vh;
+      position:relative;
     }
     #landing,#modes,#quiz-container {
       width: 90%;
@@ -62,11 +63,11 @@
     .slide-question{animation:slideQ .4s}
     .progress-container{height:8px;background:#ddd;border-radius:6px;margin:18px 0;overflow:hidden;position:relative;}
     .progress-bar{height:100%;width:0;background:var(--plasma-green);transition:width .3s;}
-    .progress-text{position:absolute; top:-22px; right:0; font-size:14px; color:#000;}
+    .progress-text{position:absolute; top:-20px; right:0; color:#000; font-size:14px;}
     .exit-top{
       position:absolute;
-      top:10px;
-      right:10px;
+      top:-45px;
+      right:0;
       background:#ff4c4c;
       color:#fff;
       border:none;
@@ -91,8 +92,11 @@
   <button onclick="startQuiz('hard')">Hard</button>
 </div>
 
-<div id="quiz-container">
+<div style="text-align:right;width:90%;max-width:500px;margin-bottom:-15px;display:none;" id="exitHolder">
   <button class="exit-top" onclick="exitQuiz()">Exit</button>
+</div>
+
+<div id="quiz-container">
   <h3 id="question"></h3>
   <div id="options"></div>
   <div class="progress-container">
@@ -151,6 +155,7 @@ function exitQuiz(){
 function startQuiz(m){
   mode=m; idx=0; score=0; selectedOpt=null;
   document.getElementById("modes").style.display="none";
+  document.getElementById("exitHolder").style.display="block";
   document.getElementById("quiz-container").style.display="block";
   if(m==="easy"){selectedQ=[...QUESTIONS.easy]; timerLen=20;}
   else if(m==="intermediate"){selectedQ=[...QUESTIONS.intermediate]; timerLen=15;}
@@ -173,11 +178,9 @@ function showQ(){
     opt.appendChild(d);
   });
 
-  // update progress text + bar
   document.getElementById("pbar").style.width=(idx/selectedQ.length)*100+"%";
   document.getElementById("progressLabel").innerText=(idx+1)+"/"+selectedQ.length;
 
-  // timer countdown
   let t=timerLen; document.getElementById("timer").innerText="Time: "+t+"s";
   timerInt=setInterval(()=>{t--; document.getElementById("timer").innerText="Time: "+t+"s"; if(t<=0){clearInterval(timerInt); nextQuestion(true);}},1000);
 }
