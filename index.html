@@ -58,44 +58,28 @@ button:hover{transform:scale(1.05);}
   position:absolute;left:50%;top:3px;transform:translateX(-50%);color:#000;font-size:14px;
 }
 
-/* Score box animations */
-@keyframes bounce {
-  0% { transform: translate(-50%, -50%) scale(0.9); }
-  50% { transform: translate(-50%, -55%) scale(1.05); }
-  70% { transform: translate(-50%, -52%) scale(0.98); }
-  100% { transform: translate(-50%, -50%) scale(1); }
-}
-
-@keyframes expandFull {
-  0% { top:50%; left:50%; width:auto; height:auto; border-radius:15px; transform:translate(-50%,-50%) scale(1); }
-  100% { top:0; left:0; width:100vw; height:100vh; border-radius:0; transform:translate(0,0) scale(1); }
-}
-
+/* Score box as credit card with gentle background transition */
 #score-box{
   position:absolute;
   top:50%;
   left:50%;
   transform: translate(-50%, -50%);
-  background: url('1.png') no-repeat center center/cover;
-  color:#fff;
+  width:400px;
+  max-width:90%;
   padding:25px 30px;
   border-radius:15px;
-  box-shadow:0 6px 20px rgba(0,0,0,.4);
+  background:#0F2F29;
+  color:#fff;
+  text-align:center;
   font-size:18px;
   opacity:0;
-  text-align:center;
+  box-shadow:0 6px 20px rgba(0,0,0,.4);
+  transition: opacity 0.6s ease, background 1s ease;
 }
 
-#score-box.show{
-  opacity:1;
-  animation: bounce 0.8s forwards;
-}
-
-/* Mobile-only smooth expand */
+/* Mobile-friendly */
 @media (max-width:768px){
-  #score-box.expand {
-    animation: expandFull 1s forwards;
-  }
+  #score-box{width:90%;}
 }
 </style>
 </head>
@@ -129,23 +113,30 @@ button:hover{transform:scale(1.05);}
 <div id="score-box"></div>
 
 <script>
-const QUESTIONS = {
-  easy: [
-    {q:"Plasma is closest to which superhero’s power?", o:["Flash","Iron Man","Thor","Batman"], a:"Thor"},
-    {q:"What color is often used to represent Plasma?", o:["Pink","Green","Orange","Purple"], a:"Green"},
-    {q:"Which animal would BEST represent Plasma?", o:["Snail","Lion","Tortoise","Cat"], a:"Lion"}
+const QUESTIONS={
+  easy:[
+    {q:"Dummy Question 1?", o:["A","B","C","D"], a:"A"},
+    {q:"Dummy Question 2?", o:["A","B","C","D"], a:"B"},
+    {q:"Dummy Question 3?", o:["A","B","C","D"], a:"C"},
+    {q:"Dummy Question 4?", o:["A","B","C","D"], a:"D"},
+    {q:"Dummy Question 5?", o:["A","B","C","D"], a:"A"},
+    {q:"Dummy Question 6?", o:["A","B","C","D"], a:"B"},
+    {q:"Dummy Question 7?", o:["A","B","C","D"], a:"C"},
+    {q:"Dummy Question 8?", o:["A","B","C","D"], a:"D"},
+    {q:"Dummy Question 9?", o:["A","B","C","D"], a:"A"},
+    {q:"Dummy Question 10?", o:["A","B","C","D"], a:"B"}
   ],
-  intermediate: [
-    {q:"Plasma chains help scale which blockchain?", o:["Bitcoin","Ethereum","Cardano","Solana"], a:"Ethereum"},
-    {q:"Plasma uses what kind of solution?", o:["Layer 1","Layer 2","Side chain","Consensus"], a:"Layer 2"}
+  intermediate:[
+    {q:"Intermediate 1?", o:["A","B","C","D"], a:"A"},
+    {q:"Intermediate 2?", o:["A","B","C","D"], a:"B"}
   ],
-  hard: [
-    {q:"Who introduced the Plasma framework?", o:["Vitalik Buterin","Joseph Poon","Satoshi Nakamoto","Gavin Wood"], a:"Joseph Poon"},
-    {q:"Plasma relies heavily on which cryptographic construct?", o:["Merkle Tree","RSA","SHA-1","Elliptic Curve"], a:"Merkle Tree"}
+  hard:[
+    {q:"Hard 1?", o:["A","B","C","D"], a:"A"},
+    {q:"Hard 2?", o:["A","B","C","D"], a:"B"}
   ]
 };
 
-let mode, selectedQ, timerLen, idx=0, score=0, selectedOpt=null, timerInt;
+let mode,selectedQ,timerLen,idx=0,score=0,selectedOpt=null,timerInt;
 
 function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
 function exitQuiz(){ if(confirm("Are you sure you want to exit the quiz?")){clearInterval(timerInt); location.reload(); } }
@@ -207,17 +198,14 @@ function finish(){
   const p=Math.round((score/selectedQ.length)*100);
   let msg=p>=80?"Plasma Champion!":p>=50?"Not bad":"Keep learning!";
   
+  // Animate background transition
+  document.body.style.transition="background 1s ease";
+  document.body.style.background="var(--plasma-green)";
+
   const box=document.getElementById("score-box");
   box.innerHTML=`<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
   
-  box.classList.add("show");
-
-  // Mobile expansion after bounce
-  setTimeout(()=>{
-    if(window.innerWidth <=768){
-      box.classList.add("expand");
-    }
-  },900);
+  box.style.opacity=1;
 }
 </script>
 </body>
