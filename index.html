@@ -29,7 +29,7 @@ button:hover{transform:scale(1.05);}
 #quiz-container{
   background:var(--plasma-white);color:#000;padding:30px;border-radius:15px;
   box-shadow:0 4px 14px rgba(0,0,0,.3);display:none;overflow:hidden;
-  transition: all 0.6s ease;
+  transition: opacity 0.6s ease;
   opacity: 0;
 }
 
@@ -58,17 +58,17 @@ button:hover{transform:scale(1.05);}
   position:absolute;left:50%;top:3px;transform:translateX(-50%);color:#000;font-size:14px;
 }
 
-/* Score box styles */
-@keyframes bounceUp {
-  0% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -65%) scale(1.1); }
-  70% { transform: translate(-50%, -60%) scale(0.95); }
-  100% { transform: translate(-50%, -60%) scale(1); }
+/* Score box animations */
+@keyframes bounce {
+  0% { transform: translate(-50%, -50%) scale(0.9); }
+  50% { transform: translate(-50%, -55%) scale(1.05); }
+  70% { transform: translate(-50%, -52%) scale(0.98); }
+  100% { transform: translate(-50%, -50%) scale(1); }
 }
 
 @keyframes expandFull {
-  0% { top: 40%; left: 50%; width: auto; height: auto; border-radius:15px; }
-  100% { top:0; left:0; width:100vw; height:100vh; border-radius:0; transform:translate(0,0); }
+  0% { top:50%; left:50%; width:auto; height:auto; border-radius:15px; transform:translate(-50%,-50%) scale(1); }
+  100% { top:0; left:0; width:100vw; height:100vh; border-radius:0; transform:translate(0,0) scale(1); }
 }
 
 #score-box{
@@ -85,19 +85,16 @@ button:hover{transform:scale(1.05);}
   opacity:0;
   text-align:center;
 }
+
 #score-box.show{
   opacity:1;
-  transform: translate(-50%, -50%) scale(1.05);
-}
-#score-box.move-up{
-  animation: bounceUp 1s forwards;
+  animation: bounce 0.8s forwards;
 }
 
 /* Mobile-only smooth expand */
-@media (max-width: 768px) {
+@media (max-width:768px){
   #score-box.expand {
     animation: expandFull 1s forwards;
-    transition: all 1s ease;
   }
 }
 </style>
@@ -132,45 +129,23 @@ button:hover{transform:scale(1.05);}
 <div id="score-box"></div>
 
 <script>
-const QUESTIONS={
-easy:[
-{q:"Plasma is closest to which superhero’s power?",o:["Flash","Iron Man","Thor","Batman"],a:"Thor"},
-{q:"What color is often used to represent Plasma?",o:["Pink","Green","Orange","Purple"],a:"Green"},
-{q:"Which animal would BEST represent Plasma?",o:["Snail","Lion","Tortoise","Cat"],a:"Lion"},
-{q:"Plasma vibes are mostly…",o:["Chaotic","Slow","Stable","Boring"],a:"Stable"},
-{q:"Plasma mascot could be a…",o:["Rocket","Potato","Sword","Chair"],a:"Rocket"},
-{q:"Which sound fits Plasma?",o:["Boom!","Meow","TikTok","Splash"],a:"Boom!"},
-{q:"Plasma is more like a…",o:["Storm","Feather","Book","Shoe"],a:"Storm"},
-{q:"Best drink for Plasma devs?",o:["Tea","Coffee","Soda","Water"],a:"Coffee"},
-{q:"Plasma feels…",o:["Lazy","Energetic","Sleepy","Gloomy"],a:"Energetic"},
-{q:"Plasma fans usually wear…",o:["Cap","Helmet","Suit","Hoodie"],a:"Hoodie"}
-],
-intermediate:[
-{q:"Plasma is a layer-2 scaling solution for…",o:["Bitcoin","Ethereum","Dogecoin","Solana"],a:"Ethereum"},
-{q:"Vitalik helped propose Plasma in…",o:["2017","2014","2020","2012"],a:"2017"},
-{q:"Main goal of Plasma is to reduce…",o:["Gas fees","Fun","Security","Time"],a:"Gas fees"},
-{q:"Plasma challenges are submitted within…",o:["7 days","7 minutes","7 months","7 hours"],a:"7 days"},
-{q:"Plasma cells bundle transactions into…",o:["Blocks","Documents","Images","Letters"],a:"Blocks"},
-{q:"Operator of a Plasma chain is also called a…",o:["Baker","Driver","Aggregator","Pilot"],a:"Aggregator"},
-{q:"Exit mechanism helps users…",o:["Fly","Teleport","Move funds back","Dance"],a:"Move funds back"},
-{q:"Data availability is mostly…",o:["On-chain","Off-chain","In notebook","On paper"],a:"Off-chain"},
-{q:"Plasma deals with…",o:["Smartphones","Smart contracts","Smart TVs","Smart cars"],a:"Smart contracts"},
-{q:"Plasma was co-proposed by…",o:["Vitalik & Joseph","Elon & Bezos","Satoshi & Hal","Fred & George"],a:"Vitalik & Joseph"}
-],
-hard:[
-{q:"Plasma uses which type of commitment?",o:["Merkle","SHA","BLS","RSA"],a:"Merkle"},
-{q:"In Plasma, users must monitor the chain to…",o:["Detect exits","Sleep","Backup","Mine"],a:"Detect exits"},
-{q:"Exit priority is usually based on…",o:["Age","Size","Position","Color"],a:"Position"},
-{q:"Plasma Cash introduced concept of…",o:["Unique coins","Cakes","Cars","Cats"],a:"Unique coins"},
-{q:"Double spends are prevented by…",o:["Proofs","Cookies","Keys","Apps"],a:"Proofs"},
-{q:"More Viable Plasma was proposed by…",o:["Vitalik","Joseph","Mina","Doge"],a:"Vitalik"},
-{q:"Plasma generally assumes honest…",o:["Operator","Chef","Guard","Robot"],a:"Operator"},
-{q:"Plasma requires users to be…",o:["Online","Offline","Sleeping","Rich"],a:"Online"},
-{q:"Checkpointing improves…",o:["Finality","Taste","Sound","Resolution"],a:"Finality"},
-{q:"Child chain exits are challenged by…",o:["Anyone","Only devs","Only whales","Only miners"],a:"Anyone"}
-]};
+const QUESTIONS = {
+  easy: [
+    {q:"Plasma is closest to which superhero’s power?", o:["Flash","Iron Man","Thor","Batman"], a:"Thor"},
+    {q:"What color is often used to represent Plasma?", o:["Pink","Green","Orange","Purple"], a:"Green"},
+    {q:"Which animal would BEST represent Plasma?", o:["Snail","Lion","Tortoise","Cat"], a:"Lion"}
+  ],
+  intermediate: [
+    {q:"Plasma chains help scale which blockchain?", o:["Bitcoin","Ethereum","Cardano","Solana"], a:"Ethereum"},
+    {q:"Plasma uses what kind of solution?", o:["Layer 1","Layer 2","Side chain","Consensus"], a:"Layer 2"}
+  ],
+  hard: [
+    {q:"Who introduced the Plasma framework?", o:["Vitalik Buterin","Joseph Poon","Satoshi Nakamoto","Gavin Wood"], a:"Joseph Poon"},
+    {q:"Plasma relies heavily on which cryptographic construct?", o:["Merkle Tree","RSA","SHA-1","Elliptic Curve"], a:"Merkle Tree"}
+  ]
+};
 
-let mode,selectedQ,timerLen,idx=0,score=0,selectedOpt=null,timerInt;
+let mode, selectedQ, timerLen, idx=0, score=0, selectedOpt=null, timerInt;
 
 function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
 function exitQuiz(){ if(confirm("Are you sure you want to exit the quiz?")){clearInterval(timerInt); location.reload(); } }
@@ -236,8 +211,13 @@ function finish(){
   box.innerHTML=`<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
   
   box.classList.add("show");
-  setTimeout(()=>{box.classList.add("move-up");},1000);
-  setTimeout(()=>{box.classList.add("expand");},2000); // triggers mobile-only smooth expand
+
+  // Mobile expansion after bounce
+  setTimeout(()=>{
+    if(window.innerWidth <=768){
+      box.classList.add("expand");
+    }
+  },900);
 }
 </script>
 </body>
