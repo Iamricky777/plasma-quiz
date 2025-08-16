@@ -6,76 +6,25 @@
   <title>Plasma Knowledge Tests</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --plasma-green: #0F2F29;
-      --plasma-white: #ffffff;
+    :root { --plasma-green:#0F2F29; --plasma-white:#ffffff;}
+    body{
+      margin:0;font-family:"Futura","Montserrat",sans-serif;
+      background:var(--plasma-green);color:var(--plasma-white);
+      display:flex;justify-content:center;align-items:center;min-height:100vh;
     }
-    body {
-      margin: 0;
-      font-family: "Futura","Montserrat", sans-serif;
-      background: var(--plasma-green);
-      color: var(--plasma-white);
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      min-height:100vh;
-      position:relative;
-    }
-    #landing,#modes,#quiz-container {
-      width: 90%;
-      max-width:500px;
-      text-align:center;
-    }
-    h1,h2,h3 {margin-top:0}
+    #landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
     button{
-      background:var(--plasma-white);
-      color:var(--plasma-green);
-      border:none;
-      font-family:inherit;
-      font-size:1.1rem;
-      padding:12px 25px;
-      margin:12px auto;
-      border-radius:10px;
-      cursor:pointer;
-      transition:opacity .2s;
-      display:block;
+      background:var(--plasma-white);color:var(--plasma-green);border:none;
+      font-family:inherit;padding:12px 25px;margin:12px auto;border-radius:10px;cursor:pointer;
     }
-    button:hover{opacity:0.9;}
     #quiz-container{
-      background:var(--plasma-white);
-      color:#000;
-      padding:30px;
-      border-radius:15px;
-      box-shadow:0 4px 14px rgba(0,0,0,0.3);
-      display:none;
-      overflow:hidden;
-      position:relative;
+      background:var(--plasma-white);color:#000;padding:30px;border-radius:15px;box-shadow:0 4px 14px rgba(0,0,0,.3);display:none;overflow:hidden;
     }
-    .option{
-      border:1px solid #ddd;
-      padding:12px;
-      margin:8px 0;
-      border-radius:8px;
-      cursor:pointer;
-    }
-    .option.selected{background:rgba(15,47,41,0.15);border-color:var(--plasma-green);}
-    @keyframes slideQ{from{transform:translateX(-40px);opacity:0}to{transform:translateX(0);opacity:1}}
-    .slide-question{animation:slideQ .4s}
-    .progress-container{height:8px;background:#ddd;border-radius:6px;margin:18px 0;overflow:hidden;position:relative;}
+    .option{border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer;}
+    .option.selected{background:rgba(15,47,41,.15);border-color:var(--plasma-green);}
+    .progress-container{height:8px;background:#ddd;border-radius:6px;margin:18px 0;position:relative;}
     .progress-bar{height:100%;width:0;background:var(--plasma-green);transition:width .3s;}
-    .progress-text{position:absolute; top:-20px; right:0; color:#000; font-size:14px;}
-    .exit-top{
-      position:absolute;
-      top:-45px;
-      right:0;
-      background:#ff4c4c;
-      color:#fff;
-      border:none;
-      border-radius:8px;
-      padding:6px 12px;
-      font-size:12px;
-      cursor:pointer;
-    }
+    .progress-text{position:absolute;left:50%;top:-20px;transform:translateX(-50%);color:#000;font-size:14px;}
   </style>
 </head>
 <body>
@@ -92,10 +41,6 @@
   <button onclick="startQuiz('hard')">Hard</button>
 </div>
 
-<div style="text-align:right;width:90%;max-width:500px;margin-bottom:-15px;display:none;" id="exitHolder">
-  <button class="exit-top" onclick="exitQuiz()">Exit</button>
-</div>
-
 <div id="quiz-container">
   <h3 id="question"></h3>
   <div id="options"></div>
@@ -105,57 +50,54 @@
   </div>
   <p id="timer"></p>
   <button onclick="nextQuestion()">Next</button>
+  <div style="text-align:right;">
+    <button onclick="exitQuiz()" style="background:#ff4c4c;color:#fff;margin-top:4px;">Exit Quiz</button>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
-const QUESTIONS ={easy:[
-  {q:"Plasma is closest to which superhero’s power?",o:["Flash","Iron Man","Thor","Batman"],a:"Thor"},
-  {q:"What color is often used to represent Plasma?",o:["Pink","Green","Orange","Purple"],a:"Green"},
-  {q:"Which animal would BEST represent Plasma?",o:["Snail","Lion","Tortoise","Cat"],a:"Lion"},
-  {q:"Plasma vibes are mostly…",o:["Chaotic","Slow","Stable","Boring"],a:"Stable"},
-  {q:"Plasma mascot could be a…",o:["Rocket","Potato","Sword","Chair"],a:"Rocket"},
-  {q:"Which sound fits Plasma?",o:["Boom!","Meow","TikTok","Splash"],a:"Boom!"},
-  {q:"Plasma is more like a…",o:["Storm","Feather","Book","Shoe"],a:"Storm"},
-  {q:"Best drink for Plasma devs?",o:["Tea","Coffee","Soda","Water"],a:"Coffee"},
-  {q:"Plasma feels…",o:["Lazy","Energetic","Sleepy","Gloomy"],a:"Energetic"},
-  {q:"Plasma fans usually wear…",o:["Cap","Helmet","Suit","Hoodie"],a:"Hoodie"}
-],intermediate:[
-  {q:"Plasma is a layer-2 scaling solution for…",o:["Bitcoin","Ethereum","Dogecoin","Solana"],a:"Ethereum"},
-  {q:"Vitalik helped propose Plasma in…",o:["2017","2014","2020","2012"],a:"2017"},
-  {q:"Main goal of Plasma is to reduce…",o:["Gas fees","Fun","Security","Time"],a:"Gas fees"},
-  {q:"Plasma challenges are submitted within…",o:["7 days","7 minutes","7 months","7 hours"],a:"7 days"},
-  {q:"Plasma cells bundle transactions into…",o:["Blocks","Documents","Images","Letters"],a:"Blocks"},
-  {q:"Operator of a Plasma chain is also called a…",o:["Baker","Driver","Aggregator","Pilot"],a:"Aggregator"},
-  {q:"Exit mechanism helps users…",o:["Fly","Teleport","Move funds back","Dance"],a:"Move funds back"},
-  {q:"Data availability is mostly…",o:["On-chain","Off-chain","In notebook","On paper"],a:"Off-chain"},
-  {q:"Plasma deals with…",o:["Smartphones","Smart contracts","Smart TVs","Smart cars"],a:"Smart contracts"},
-  {q:"Plasma was co-proposed by…",o:["Vitalik & Joseph","Elon & Bezos","Satoshi & Hal","Fred & George"],a:"Vitalik & Joseph"}
-],hard:[
-  {q:"Plasma uses which type of commitment?",o:["Merkle","SHA","BLS","RSA"],a:"Merkle"},
-  {q:"In Plasma, users must monitor the chain to…",o:["Detect exits","Sleep","Backup","Mine"],a:"Detect exits"},
-  {q:"Exit priority is usually based on…",o:["Age","Size","Position","Color"],a:"Position"},
-  {q:"Plasma Cash introduced concept of…",o:["Unique coins","Cakes","Cars","Cats"],a:"Unique coins"},
-  {q:"Double spends are prevented by…",o:["Proofs","Cookies","Keys","Apps"],a:"Proofs"},
-  {q:"More Viable Plasma was proposed by…",o:["Vitalik","Joseph","Mina","Doge"],a:"Vitalik"},
-  {q:"Plasma generally assumes honest…",o:["Operator","Chef","Guard","Robot"],a:"Operator"},
-  {q:"Plasma requires users to be…",o:["Online","Offline","Sleeping","Rich"],a:"Online"},
-  {q:"Checkpointing improves…",o:["Finality","Taste","Sound","Resolution"],a:"Finality"},
-  {q:"Child chain exits are challenged by…",o:["Anyone","Only devs","Only whales","Only miners"],a:"Anyone"}
-]};
+const QUESTIONS={easy:[
+{q:"Plasma is closest to which superhero’s power?",o:["Flash","Iron Man","Thor","Batman"],a:"Thor"},
+{q:"What color is often used to represent Plasma?",o:["Pink","Green","Orange","Purple"],a:"Green"},
+{q:"Which animal would BEST represent Plasma?",o:["Snail","Lion","Tortoise","Cat"],a:"Lion"},
+{q:"Plasma vibes are mostly…",o:["Chaotic","Slow","Stable","Boring"],a:"Stable"},
+{q:"Plasma mascot could be a…",o:["Rocket","Potato","Sword","Chair"],a:"Rocket"},
+{q:"Which sound fits Plasma?",o:["Boom!","Meow","TikTok","Splash"],a:"Boom!"},
+{q:"Plasma is more like a…",o:["Storm","Feather","Book","Shoe"],a:"Storm"},
+{q:"Best drink for Plasma devs?",o:["Tea","Coffee","Soda","Water"],a:"Coffee"},
+{q:"Plasma feels…",o:["Lazy","Energetic","Sleepy","Gloomy"],a:"Energetic"},
+{q:"Plasma fans usually wear…",o:["Cap","Helmet","Suit","Hoodie"],a:"Hoodie"}],
+intermediate:[
+{q:"Plasma is a layer-2 scaling solution for…",o:["Bitcoin","Ethereum","Dogecoin","Solana"],a:"Ethereum"},
+{q:"Vitalik helped propose Plasma in…",o:["2017","2014","2020","2012"],a:"2017"},
+{q:"Main goal of Plasma is to reduce…",o:["Gas fees","Fun","Security","Time"],a:"Gas fees"},
+{q:"Plasma challenges are submitted within…",o:["7 days","7 minutes","7 months","7 hours"],a:"7 days"},
+{q:"Plasma cells bundle transactions into…",o:["Blocks","Documents","Images","Letters"],a:"Blocks"},
+{q:"Operator of a Plasma chain is also called a…",o:["Baker","Driver","Aggregator","Pilot"],a:"Aggregator"},
+{q:"Exit mechanism helps users…",o:["Fly","Teleport","Move funds back","Dance"],a:"Move funds back"},
+{q:"Data availability is mostly…",o:["On-chain","Off-chain","In notebook","On paper"],a:"Off-chain"},
+{q:"Plasma deals with…",o:["Smartphones","Smart contracts","Smart TVs","Smart cars"],a:"Smart contracts"},
+{q:"Plasma was co-proposed by…",o:["Vitalik & Joseph","Elon & Bezos","Satoshi & Hal","Fred & George"],a:"Vitalik & Joseph"}],
+hard:[
+{q:"Plasma uses which type of commitment?",o:["Merkle","SHA","BLS","RSA"],a:"Merkle"},
+{q:"In Plasma, users must monitor the chain to…",o:["Detect exits","Sleep","Backup","Mine"],a:"Detect exits"},
+{q:"Exit priority is usually based on…",o:["Age","Size","Position","Color"],a:"Position"},
+{q:"Plasma Cash introduced concept of…",o:["Unique coins","Cakes","Cars","Cats"],a:"Unique coins"},
+{q:"Double spends are prevented by…",o:["Proofs","Cookies","Keys","Apps"],a:"Proofs"},
+{q:"More Viable Plasma was proposed by…",o:["Vitalik","Joseph","Mina","Doge"],a:"Vitalik"},
+{q:"Plasma generally assumes honest…",o:["Operator","Chef","Guard","Robot"],a:"Operator"},
+{q:"Plasma requires users to be…",o:["Online","Offline","Sleeping","Rich"],a:"Online"},
+{q:"Checkpointing improves…",o:["Finality","Taste","Sound","Resolution"],a:"Finality"},
+{q:"Child chain exits are challenged by…",o:["Anyone","Only devs","Only whales","Only miners"],a:"Anyone"}]};
 
-let mode, selectedQ, timerLen, idx=0, score=0, selectedOpt=null, timerInt;
+let mode,selectedQ,timerLen,idx=0,score=0,selectedOpt=null,timerInt;
 
 function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
-function exitQuiz(){
-  if(confirm("Are you sure you want to exit the quiz?")){
-    clearInterval(timerInt); location.reload();
-  }
-}
+function exitQuiz(){ if(confirm("Are you sure you want to exit the quiz?")){clearInterval(timerInt); location.reload(); } }
 function startQuiz(m){
-  mode=m; idx=0; score=0; selectedOpt=null;
+  mode=m; idx=0; score=0;
   document.getElementById("modes").style.display="none";
-  document.getElementById("exitHolder").style.display="block";
   document.getElementById("quiz-container").style.display="block";
   if(m==="easy"){selectedQ=[...QUESTIONS.easy]; timerLen=20;}
   else if(m==="intermediate"){selectedQ=[...QUESTIONS.intermediate]; timerLen=15;}
@@ -166,46 +108,35 @@ function showQ(){
   if(timerInt) clearInterval(timerInt);
   if(idx>=selectedQ.length){finish(); return;}
   const q=selectedQ[idx];
-  document.getElementById("quiz-container").style.background = "var(--plasma-white)";
-  document.getElementById("quiz-container").style.color = "#000";
-
+  document.getElementById("quiz-container").style.background="var(--plasma-white)";
+  document.getElementById("quiz-container").style.color="#000";
   document.getElementById("question").innerText=q.q;
   document.getElementById("question").className="slide-question";
-  const opt=document.getElementById("options"); opt.innerHTML="";
+  const opt=document.getElementById("options");
+  opt.innerHTML="";
   q.o.forEach(o=>{
     const d=document.createElement("div"); d.className="option"; d.innerText=o;
-    d.onclick=()=>{selectedOpt=o; document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected")); d.classList.add("selected");};
+    d.onclick=()=>{selectedOpt=o;document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));d.classList.add("selected");};
     opt.appendChild(d);
   });
-
   document.getElementById("pbar").style.width=(idx/selectedQ.length)*100+"%";
   document.getElementById("progressLabel").innerText=(idx+1)+"/"+selectedQ.length;
-
-  let t=timerLen; document.getElementById("timer").innerText="Time: "+t+"s";
-  timerInt=setInterval(()=>{t--; document.getElementById("timer").innerText="Time: "+t+"s"; if(t<=0){clearInterval(timerInt); nextQuestion(true);}},1000);
+  let t=timerLen;document.getElementById("timer").innerText="Time: "+t+"s";
+  timerInt=setInterval(()=>{t--;document.getElementById("timer").innerText="Time: "+t+"s";if(t<=0){clearInterval(timerInt);nextQuestion(true);}},1000);
 }
 function nextQuestion(auto){
-  if(!auto && !selectedOpt){alert("Please select an option"); return;}
-  if(selectedOpt===selectedQ[idx].a) score++;
-  selectedOpt=null; idx++; showQ();
+  if(!auto && !selectedOpt){alert("Please select an option");return;}
+  if(selectedOpt===selectedQ[idx].a)score++;
+  selectedOpt=null;idx++;showQ();
 }
-
 function finish(){
   clearInterval(timerInt);
   const p=Math.round((score/selectedQ.length)*100);
   let msg=p>=80?"Plasma Champion!":p>=50?"Not bad":"Keep learning!";
-
-  document.getElementById("quiz-container").style.background = `url('1.png') no-repeat center center/cover`;
-  document.getElementById("quiz-container").style.color="#ffffff";
-
-  document.getElementById("quiz-container").innerHTML=`
-     <div style="text-align:left;padding:20px;">
-        <h2 style="margin-bottom:4px;">You scored ${score}/${selectedQ.length}</h2>
-        <h3 style="margin:4px 0;">${p}%</h3>
-        <p style="margin:8px 0;"><strong>${msg}</strong></p>
-        <button onclick="location.reload()">Restart</button>
-     </div>
-  `;
+  document.getElementById("quiz-container").style.background=`url('1.png') no-repeat center center/cover`;
+  document.getElementById("quiz-container").style.color="#fff";
+  document.getElementById("quiz-container").innerHTML=
+ `<div style="text-align:left;padding:20px;"><h2 style="margin-bottom:4px;">You scored ${score}/${selectedQ.length}</h2><h3 style="margin:4px 0;">${p}%</h3><p style="margin:8px 0;"><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button></div>`;
 }
 </script>
 </body>
