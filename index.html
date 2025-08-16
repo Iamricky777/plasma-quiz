@@ -15,25 +15,35 @@
     #landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
     button{
       background:var(--plasma-white);color:var(--plasma-green);border:none;
-      font-family:inherit;padding:12px 25px;margin:12px auto;border-radius:10px;cursor:pointer;
+      font-family:inherit;padding:16px 30px;margin:12px auto;border-radius:10px;cursor:pointer;
+      font-size:16px;
     }
     #quiz-container{
       background:var(--plasma-white);color:#000;padding:30px;border-radius:15px;box-shadow:0 4px 14px rgba(0,0,0,.3);display:none;overflow:hidden;
     }
     .option{border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer;}
     .option.selected{background:rgba(15,47,41,.15);border-color:var(--plasma-green);}
-    .progress-container{height:20px;background:#ddd;border-radius:10px;margin:18px 0;position:relative;}
-    .progress-bar{height:100%;width:0;background:var(--plasma-green);border-radius:10px;transition:width .3s;}
-    .progress-text{
-      position:absolute;
-      left:50%;top:50%;
-      transform:translate(-50%,-50%);
-      color:#000;font-size:14px;font-weight:bold;
-      pointer-events:none;
+    .progress-container{
+      height:30px;
+      background:#ddd;
+      border-radius:6px;
+      margin:18px 0;
     }
-    #next-btn{padding:14px 30px;font-size:16px;}
-    #exit-container{text-align:right;margin-top:6px;}
-    #exit-btn{background:#000;color:#fff;padding:8px 16px;font-size:14px;}
+    .progress-bar{
+      height:100%;
+      width:0;
+      background:var(--plasma-green);
+      transition:width .3s;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:bold;
+      color:#fff;
+    }
+    #timer{
+      margin:12px 0;
+      font-weight:bold;
+    }
   </style>
 </head>
 <body>
@@ -54,13 +64,12 @@
   <h3 id="question"></h3>
   <div id="options"></div>
   <div class="progress-container">
-    <div id="pbar" class="progress-bar"></div>
-    <span id="progressLabel" class="progress-text"></span>
+    <div id="pbar" class="progress-bar">1/10</div>
   </div>
   <p id="timer"></p>
-  <button id="next-btn" onclick="nextQuestion()">Next</button>
-  <div id="exit-container">
-    <button id="exit-btn" onclick="exitQuiz()">Exit Quiz</button>
+  <button onclick="nextQuestion()">Next</button>
+  <div style="text-align:right;">
+    <button onclick="exitQuiz()" style="background:#ff4c4c;color:#fff;margin-top:4px;">Exit Quiz</button>
   </div>
 </div>
 
@@ -77,8 +86,28 @@ const QUESTIONS={easy:[
 {q:"Best drink for Plasma devs?",o:["Tea","Coffee","Soda","Water"],a:"Coffee"},
 {q:"Plasma feels…",o:["Lazy","Energetic","Sleepy","Gloomy"],a:"Energetic"},
 {q:"Plasma fans usually wear…",o:["Cap","Helmet","Suit","Hoodie"],a:"Hoodie"}],
-intermediate:[ /* same as before */ ],
-hard:[ /* same as before */ ]};
+intermediate:[
+{q:"Plasma is a layer-2 scaling solution for…",o:["Bitcoin","Ethereum","Dogecoin","Solana"],a:"Ethereum"},
+{q:"Vitalik helped propose Plasma in…",o:["2017","2014","2020","2012"],a:"2017"},
+{q:"Main goal of Plasma is to reduce…",o:["Gas fees","Fun","Security","Time"],a:"Gas fees"},
+{q:"Plasma challenges are submitted within…",o:["7 days","7 minutes","7 months","7 hours"],a:"7 days"},
+{q:"Plasma cells bundle transactions into…",o:["Blocks","Documents","Images","Letters"],a:"Blocks"},
+{q:"Operator of a Plasma chain is also called a…",o:["Baker","Driver","Aggregator","Pilot"],a:"Aggregator"},
+{q:"Exit mechanism helps users…",o:["Fly","Teleport","Move funds back","Dance"],a:"Move funds back"},
+{q:"Data availability is mostly…",o:["On-chain","Off-chain","In notebook","On paper"],a:"Off-chain"},
+{q:"Plasma deals with…",o:["Smartphones","Smart contracts","Smart TVs","Smart cars"],a:"Smart contracts"},
+{q:"Plasma was co-proposed by…",o:["Vitalik & Joseph","Elon & Bezos","Satoshi & Hal","Fred & George"],a:"Vitalik & Joseph"}],
+hard:[
+{q:"Plasma uses which type of commitment?",o:["Merkle","SHA","BLS","RSA"],a:"Merkle"},
+{q:"In Plasma, users must monitor the chain to…",o:["Detect exits","Sleep","Backup","Mine"],a:"Detect exits"},
+{q:"Exit priority is usually based on…",o:["Age","Size","Position","Color"],a:"Position"},
+{q:"Plasma Cash introduced concept of…",o:["Unique coins","Cakes","Cars","Cats"],a:"Unique coins"},
+{q:"Double spends are prevented by…",o:["Proofs","Cookies","Keys","Apps"],a:"Proofs"},
+{q:"More Viable Plasma was proposed by…",o:["Vitalik","Joseph","Mina","Doge"],a:"Vitalik"},
+{q:"Plasma generally assumes honest…",o:["Operator","Chef","Guard","Robot"],a:"Operator"},
+{q:"Plasma requires users to be…",o:["Online","Offline","Sleeping","Rich"],a:"Online"},
+{q:"Checkpointing improves…",o:["Finality","Taste","Sound","Resolution"],a:"Finality"},
+{q:"Child chain exits are challenged by…",o:["Anyone","Only devs","Only whales","Only miners"],a:"Anyone"}]};
 
 let mode,selectedQ,timerLen,idx=0,score=0,selectedOpt=null,timerInt;
 
@@ -100,14 +129,17 @@ function showQ(){
   document.getElementById("quiz-container").style.background="var(--plasma-white)";
   document.getElementById("quiz-container").style.color="#000";
   document.getElementById("question").innerText=q.q;
-  document.getElementById("options").innerHTML="";
+  document.getElementById("question").className="slide-question";
+  const opt=document.getElementById("options");
+  opt.innerHTML="";
   q.o.forEach(o=>{
     const d=document.createElement("div"); d.className="option"; d.innerText=o;
     d.onclick=()=>{selectedOpt=o;document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));d.classList.add("selected");};
-    document.getElementById("options").appendChild(d);
+    opt.appendChild(d);
   });
-  document.getElementById("pbar").style.width=((idx+1)/selectedQ.length)*100+"%";
-  document.getElementById("progressLabel").innerText=(idx+1)+"/"+selectedQ.length;
+  const pbar=document.getElementById("pbar");
+  pbar.style.width=(idx/selectedQ.length)*100+"%";
+  pbar.innerText=`${idx+1}/${selectedQ.length}`;
   let t=timerLen;document.getElementById("timer").innerText="Time: "+t+"s";
   timerInt=setInterval(()=>{t--;document.getElementById("timer").innerText="Time: "+t+"s";if(t<=0){clearInterval(timerInt);nextQuestion(true);}},1000);
 }
