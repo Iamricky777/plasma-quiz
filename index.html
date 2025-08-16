@@ -1,50 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plasma Knowledge Tests</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
-  <style>
-    :root { --plasma-green:#0F2F29; --plasma-white:#ffffff;}
-    body{
-      margin:0;font-family:"Futura","Montserrat",sans-serif;
-      background:var(--plasma-green);color:var(--plasma-white);
-      display:flex;justify-content:center;align-items:center;min-height:100vh;
-    }
-    #landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
-    button{
-      background:var(--plasma-white);color:var(--plasma-green);border:none;
-      font-family:inherit;padding:16px 30px;margin:12px auto;border-radius:10px;cursor:pointer;
-      font-size:16px;
-    }
-    #quiz-container{
-      background:var(--plasma-white);color:#000;padding:30px;border-radius:15px;box-shadow:0 4px 14px rgba(0,0,0,.3);display:none;overflow:hidden;
-    }
-    .option{border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer;}
-    .option.selected{background:rgba(15,47,41,.15);border-color:var(--plasma-green);}
-    .progress-container{
-      height:30px;
-      background:#ddd;
-      border-radius:6px;
-      margin:18px 0;
-    }
-    .progress-bar{
-      height:100%;
-      width:0;
-      background:var(--plasma-green);
-      transition:width .3s;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:bold;
-      color:#fff;
-    }
-    #timer{
-      margin:12px 0;
-      font-weight:bold;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Plasma Knowledge Tests</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root { --plasma-green:#0F2F29; --plasma-white:#ffffff;}
+body{
+  margin:0;font-family:"Futura","Montserrat",sans-serif;
+  background:var(--plasma-green);color:var(--plasma-white);
+  display:flex;justify-content:center;align-items:center;min-height:100vh;
+}
+#landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
+button{
+  background:var(--plasma-white);color:var(--plasma-green);border:none;
+  font-family:inherit;padding:16px 30px;margin:12px auto;border-radius:10px;cursor:pointer;
+  font-size:16px;transition:0.3s;
+}
+button#next-btn{border:2px solid var(--plasma-green);}
+button:hover{opacity:0.9;}
+#quiz-container{
+  background:var(--plasma-white);color:#000;padding:30px;border-radius:15px;box-shadow:0 4px 14px rgba(0,0,0,.3);
+  display:none;overflow:hidden;position:relative;
+}
+.option{border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer;transition:0.3s;}
+.option.selected{background:rgba(15,47,41,.15);border-color:var(--plasma-green);}
+.progress-container{
+  height:30px;
+  background:#ddd;
+  border-radius:6px;
+  margin:18px 0;
+  overflow:hidden;
+}
+.progress-bar{
+  height:100%;
+  width:0;
+  background:var(--plasma-green);
+  transition:width .5s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:#fff;
+}
+#timer{margin:12px 0;font-weight:bold;}
+/* Fade effect between questions */
+.slide-question{opacity:0;transform:translateX(50px);transition:all 0.5s ease;}
+.slide-question.show{opacity:1;transform:translateX(0);}
+#score-card{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  background:var(--plasma-white);
+  color:#000;
+  padding:25px 30px;
+  border-radius:15px;
+  box-shadow:0 6px 20px rgba(0,0,0,.4);
+  font-size:18px;
+  opacity:0;
+  transition:all 0.8s ease;
+}
+#score-card.show{
+  opacity:1;
+  animation:moveUp 2s forwards;
+}
+@keyframes moveUp{
+  0% {transform:translate(-50%, -50%);}
+  50% {transform:translate(-50%, -150%);}
+  100% {transform:translate(-50%, -220%);}
+}
+</style>
 </head>
 <body>
 
@@ -61,17 +88,19 @@
 </div>
 
 <div id="quiz-container">
-  <h3 id="question"></h3>
+  <h3 id="question" class="slide-question"></h3>
   <div id="options"></div>
   <div class="progress-container">
     <div id="pbar" class="progress-bar">1/10</div>
   </div>
   <p id="timer"></p>
-  <button onclick="nextQuestion()">Next</button>
+  <button id="next-btn" onclick="nextQuestion()">Next</button>
   <div style="text-align:right;">
     <button onclick="exitQuiz()" style="background:#ff4c4c;color:#fff;margin-top:4px;">Exit Quiz</button>
   </div>
 </div>
+
+<div id="score-card"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
@@ -113,6 +142,7 @@ let mode,selectedQ,timerLen,idx=0,score=0,selectedOpt=null,timerInt;
 
 function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
 function exitQuiz(){ if(confirm("Are you sure you want to exit the quiz?")){clearInterval(timerInt); location.reload(); } }
+
 function startQuiz(m){
   mode=m; idx=0; score=0;
   document.getElementById("modes").style.display="none";
@@ -122,14 +152,14 @@ function startQuiz(m){
   else {selectedQ=[...QUESTIONS.hard]; timerLen=10;}
   showQ();
 }
+
 function showQ(){
   if(timerInt) clearInterval(timerInt);
   if(idx>=selectedQ.length){finish(); return;}
   const q=selectedQ[idx];
-  document.getElementById("quiz-container").style.background="var(--plasma-white)";
-  document.getElementById("quiz-container").style.color="#000";
-  document.getElementById("question").innerText=q.q;
-  document.getElementById("question").className="slide-question";
+  document.getElementById("question").classList.remove("show");
+  setTimeout(()=>{document.getElementById("question").innerText=q.q;document.getElementById("question").classList.add("show");},50);
+
   const opt=document.getElementById("options");
   opt.innerHTML="";
   q.o.forEach(o=>{
@@ -137,25 +167,28 @@ function showQ(){
     d.onclick=()=>{selectedOpt=o;document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));d.classList.add("selected");};
     opt.appendChild(d);
   });
+  
   const pbar=document.getElementById("pbar");
   pbar.style.width=(idx/selectedQ.length)*100+"%";
   pbar.innerText=`${idx+1}/${selectedQ.length}`;
+  
   let t=timerLen;document.getElementById("timer").innerText="Time: "+t+"s";
   timerInt=setInterval(()=>{t--;document.getElementById("timer").innerText="Time: "+t+"s";if(t<=0){clearInterval(timerInt);nextQuestion(true);}},1000);
 }
+
 function nextQuestion(auto){
   if(!auto && !selectedOpt){alert("Please select an option");return;}
   if(selectedOpt===selectedQ[idx].a)score++;
   selectedOpt=null;idx++;showQ();
 }
+
 function finish(){
   clearInterval(timerInt);
   const p=Math.round((score/selectedQ.length)*100);
   let msg=p>=80?"Plasma Champion!":p>=50?"Not bad":"Keep learning!";
-  document.getElementById("quiz-container").style.background=`url('1.png') no-repeat center center/cover`;
-  document.getElementById("quiz-container").style.color="#fff";
-  document.getElementById("quiz-container").innerHTML=
- `<div style="text-align:left;padding:20px;"><h2 style="margin-bottom:4px;">You scored ${score}/${selectedQ.length}</h2><h3 style="margin:4px 0;">${p}%</h3><p style="margin:8px 0;"><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button></div>`;
+  const card=document.getElementById("score-card");
+  card.innerHTML=`<h2>Score Card</h2><p>${score}/${selectedQ.length} - ${p}%</p><strong>${msg}</strong>`;
+  card.classList.add("show");
 }
 </script>
 </body>
