@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plasma Knowledge Tests</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
-
   <style>
     :root {
       --plasma-green: #0F2F29;
@@ -41,7 +40,6 @@
       display:block;
     }
     button:hover{opacity:0.9;}
-
     #quiz-container{
       background:var(--plasma-white);
       color:#000;
@@ -49,7 +47,7 @@
       border-radius:15px;
       box-shadow:0 4px 14px rgba(0,0,0,0.3);
       display:none;
-      position:relative;
+      overflow:hidden;
     }
     .option{
       border:1px solid #ddd;
@@ -61,19 +59,8 @@
     .option.selected{background:rgba(15,47,41,0.15);border-color:var(--plasma-green);}
     @keyframes slideQ{from{transform:translateX(-40px);opacity:0}to{transform:translateX(0);opacity:1}}
     .slide-question{animation:slideQ .4s}
-
     .progress-container{height:8px;background:#ddd;border-radius:6px;margin:18px 0;overflow:hidden;}
     .progress-bar{height:100%;width:0;background:var(--plasma-green);transition:width .3s;}
-
-    .exit-btn {
-      position:absolute;
-      top:10px;
-      right:10px;
-      font-size:0.8rem;
-      padding:5px 10px;
-      background:#ff4f4f;
-      color:#fff;
-    }
   </style>
 </head>
 <body>
@@ -91,12 +78,12 @@
 </div>
 
 <div id="quiz-container">
-  <button class="exit-btn" onclick="exitQuiz()">Exit Quiz</button>
   <h3 id="question"></h3>
   <div id="options"></div>
   <div class="progress-container"><div id="pbar" class="progress-bar"></div></div>
   <p id="timer"></p>
   <button onclick="nextQuestion()">Next</button>
+  <button onclick="exitQuiz()">Exit Quiz</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
@@ -127,21 +114,21 @@ const QUESTIONS ={easy:[
   {q:"Plasma uses which type of commitment?",o:["Merkle","SHA","BLS","RSA"],a:"Merkle"},
   {q:"In Plasma, users must monitor the chain to…",o:["Detect exits","Sleep","Backup","Mine"],a:"Detect exits"},
   {q:"Exit priority is usually based on…",o:["Age","Size","Position","Color"],a:"Position"},
-  {q:"Plasma MVP design criticized for lack of…",o:["Data availability","Food","Air","Gas"],a:"Data availability"},
   {q:"Plasma Cash introduced concept of…",o:["Unique coins","Cakes","Cars","Cats"],a:"Unique coins"},
   {q:"Double spends are prevented by…",o:["Proofs","Cookies","Keys","Apps"],a:"Proofs"},
   {q:"More Viable Plasma was proposed by…",o:["Vitalik","Joseph","Mina","Doge"],a:"Vitalik"},
   {q:"Plasma generally assumes honest…",o:["Operator","Chef","Guard","Robot"],a:"Operator"},
   {q:"Plasma requires users to be…",o:["Online","Offline","Sleeping","Rich"],a:"Online"},
-  {q:"Checkpointing improves…",o:["Finality","Taste","Sound","Resolution"],a:"Finality"}
+  {q:"Checkpointing improves…",o:["Finality","Taste","Sound","Resolution"],a:"Finality"},
+  {q:"Child chain exits are challenged by…",o:["Anyone","Only devs","Only whales","Only miners"],a:"Anyone"}
 ]};
+
 let mode, selectedQ, timerLen, idx=0, score=0, selectedOpt=null, timerInt;
 
 function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
 function exitQuiz(){
   if(confirm("Are you sure you want to exit the quiz?")){
-    clearInterval(timerInt);
-    location.reload();
+    clearInterval(timerInt); location.reload();
   }
 }
 function startQuiz(m){
@@ -157,6 +144,9 @@ function showQ(){
   if(timerInt) clearInterval(timerInt);
   if(idx>=selectedQ.length){finish(); return;}
   const q=selectedQ[idx];
+  document.getElementById("quiz-container").style.background = "var(--plasma-white)";
+  document.getElementById("quiz-container").style.color = "#000";
+
   document.getElementById("question").innerText=q.q;
   document.getElementById("question").className="slide-question";
   const opt=document.getElementById("options"); opt.innerHTML="";
@@ -174,12 +164,23 @@ function nextQuestion(auto){
   if(selectedOpt===selectedQ[idx].a) score++;
   selectedOpt=null; idx++; showQ();
 }
+
 function finish(){
   clearInterval(timerInt);
   const p=Math.round((score/selectedQ.length)*100);
   let msg=p>=80?"Plasma Champion!":p>=50?"Not bad":"Keep learning!";
-  if(p>=80) confetti();
-  document.getElementById("quiz-container").innerHTML=`<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
+
+  document.getElementById("quiz-container").style.background = `url('1.png') no-repeat center center/cover`;
+  document.getElementById("quiz-container").style.color="#ffffff";
+
+  document.getElementById("quiz-container").innerHTML=`
+     <div style="text-align:left;padding:20px;">
+        <h2 style="margin-bottom:4px;">You scored ${score}/${selectedQ.length}</h2>
+        <h3 style="margin:4px 0;">${p}%</h3>
+        <p style="margin:8px 0;"><strong>${msg}</strong></p>
+        <button onclick="location.reload()">Restart</button>
+     </div>
+  `;
 }
 </script>
 </body>
