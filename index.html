@@ -6,12 +6,13 @@
 <title>Plasma Knowledge Tests</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
-:root { --plasma-green:#0F2F29; --plasma-white:#ffffff;}
+:root { --plasma-green:#0F2F29; --plasma-white:#ffffff; --selected-green: rgba(15,47,41,0.25);}
 body{
   margin:0;font-family:"Futura","Montserrat",sans-serif;
   background:var(--plasma-green);color:var(--plasma-white);
   display:flex;justify-content:center;align-items:center;min-height:100vh;
   overflow:hidden;
+  transition: background 0.8s ease;
 }
 #landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
 button{
@@ -40,8 +41,10 @@ button:hover{transform:scale(1.05);}
 .option{
   border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer;
   transition: all 0.3s ease;
+  position: relative; /* ensures clickable area is correct */
+  z-index: 1;
 }
-.option.selected{background:rgba(15,47,41,.15);border-color:var(--plasma-green);}
+.option.selected{background: var(--selected-green); border-color: var(--plasma-green);}
 .option:hover{transform:scale(1.02);}
 
 .progress-container{
@@ -58,40 +61,35 @@ button:hover{transform:scale(1.05);}
   position:absolute;left:50%;top:3px;transform:translateX(-50%);color:#000;font-size:14px;
 }
 
-/* Score box with background image and left-aligned content */
+/* Score box style */
 #score-box{
   position:absolute;
   top:50%;
   left:50%;
   transform: translate(-50%, -50%);
-  width:400px;
-  max-width:90%;
-  padding:25px 30px;
-  border-radius:15px;
+  width:380px;
+  height:200px;
   background: url('1.png') no-repeat center center/cover;
   color:#fff;
-  text-align:left;
+  padding:25px 30px;
+  border-radius:20px;
+  box-shadow:0 6px 20px rgba(0,0,0,.4);
   font-size:18px;
   opacity:0;
-  box-shadow:0 6px 20px rgba(0,0,0,.4);
-  transition: opacity 0.6s ease, background 1s ease;
+  text-align:left;
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-/* Make restart button left-aligned and match card style */
+#score-box.show{
+  opacity:1;
+}
+
 #score-box button{
-  margin-top:15px;
-  background: rgba(255,255,255,0.8);
-  color: var(--plasma-green);
-  border:none;
-  padding:10px 20px;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:16px;
+  align-self: flex-start;
+  margin-top: 15px;
 }
-#score-box button:hover{
-  background: rgba(255,255,255,1);
-}
-
 </style>
 </head>
 <body>
@@ -124,18 +122,18 @@ button:hover{transform:scale(1.05);}
 <div id="score-box"></div>
 
 <script>
-const QUESTIONS = {
+const QUESTIONS={
   easy:[
-    {q:"Plasma is the ___ state of matter?", o:["First","Second","Fourth","Third"], a:"Fourth"},
-    {q:"Plasma is mostly made of?", o:["Atoms","Ions & electrons","Molecules","Neutrons"], a:"Ions & electrons"},
-    {q:"The Sun is made of?", o:["Gas","Liquid","Plasma","Solid"], a:"Plasma"},
-    {q:"Plasma conducts?", o:["Electricity","Nothing","Water","Light"], a:"Electricity"},
-    {q:"Lightning is a type of?", o:["Gas","Plasma","Water","Ice"], a:"Plasma"},
-    {q:"Neon signs glow due to?", o:["Plasma","Gas","Liquid","Solid"], a:"Plasma"},
-    {q:"Aurora borealis is?", o:["Gas","Liquid","Plasma","Solid"], a:"Plasma"},
-    {q:"Plasma can be created using?", o:["Heat","Pressure","Magnetism","Electricity"], a:"Electricity"},
-    {q:"Plasma TVs use?", o:["Plasma","LED","LCD","OLED"], a:"Plasma"},
-    {q:"Plasma is influenced by?", o:["Gravity","Electric & Magnetic fields","Sound","None"], a:"Electric & Magnetic fields"}
+    {q:"What color is plasma typically?", o:["Red","Green","Blue","Yellow"], a:"Red"},
+    {q:"Plasma is considered?", o:["Solid","Liquid","Gas","Ionized gas"], a:"Ionized gas"},
+    {q:"Most common plasma in universe?", o:["Stars","Flames","Neon lights","Lightning"], a:"Stars"},
+    {q:"Plasma conducts?", o:["Electricity","Nothing","Heat","Light"], a:"Electricity"},
+    {q:"Plasma contains?", o:["Atoms","Ions & electrons","Molecules","Neutrons"], a:"Ions & electrons"},
+    {q:"Neon signs glow because of?", o:["Plasma","Gas","Metal","Water"], a:"Plasma"},
+    {q:"Plasma is affected by?", o:["Gravity","Magnetic fields","Sound","Air"], a:"Magnetic fields"},
+    {q:"Plasma temperature is usually?", o:["Low","Medium","High","Frozen"], a:"High"},
+    {q:"Lightning is an example of?", o:["Gas","Plasma","Liquid","Solid"], a:"Plasma"},
+    {q:"Stars are mainly made of?", o:["Hydrogen plasma","Iron","Oxygen","Helium"], a:"Hydrogen plasma"}
   ],
   intermediate:[
     {q:"Intermediate Q1?", o:["A","B","C","D"], a:"A"},
@@ -143,6 +141,11 @@ const QUESTIONS = {
     {q:"Intermediate Q3?", o:["A","B","C","D"], a:"C"},
     {q:"Intermediate Q4?", o:["A","B","C","D"], a:"D"},
     {q:"Intermediate Q5?", o:["A","B","C","D"], a:"A"},
+    {q:"Intermediate Q6?", o:["A","B","C","D"], a:"B"},
+    {q:"Intermediate Q7?", o:["A","B","C","D"], a:"C"},
+    {q:"Intermediate Q8?", o:["A","B","C","D"], a:"D"},
+    {q:"Intermediate Q9?", o:["A","B","C","D"], a:"A"},
+    {q:"Intermediate Q10?", o:["A","B","C","D"], a:"B"}
   ],
   hard:[
     {q:"Hard Q1?", o:["A","B","C","D"], a:"A"},
@@ -150,10 +153,15 @@ const QUESTIONS = {
     {q:"Hard Q3?", o:["A","B","C","D"], a:"C"},
     {q:"Hard Q4?", o:["A","B","C","D"], a:"D"},
     {q:"Hard Q5?", o:["A","B","C","D"], a:"A"},
+    {q:"Hard Q6?", o:["A","B","C","D"], a:"B"},
+    {q:"Hard Q7?", o:["A","B","C","D"], a:"C"},
+    {q:"Hard Q8?", o:["A","B","C","D"], a:"D"},
+    {q:"Hard Q9?", o:["A","B","C","D"], a:"A"},
+    {q:"Hard Q10?", o:["A","B","C","D"], a:"B"}
   ]
 };
 
-let mode, selectedQ, timerLen, idx=0, score=0, selectedOpt=null, timerInt;
+let mode,selectedQ,timerLen,idx=0,score=0,selectedOpt=null,timerInt;
 
 function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
 function exitQuiz(){ if(confirm("Are you sure you want to exit the quiz?")){clearInterval(timerInt); location.reload(); } }
@@ -177,8 +185,10 @@ function showQ(){
   document.getElementById("question").innerText=q.q;
   const opt=document.getElementById("options");
   opt.innerHTML="";
-  q.o.forEach(o=>{
-    const d=document.createElement("div"); d.className="option"; d.innerText=o;
+  q.o.forEach((o,i)=>{
+    const d=document.createElement("div"); 
+    d.className="option"; 
+    d.innerText=o;
     d.onclick=()=>{
       selectedOpt=o;
       document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));
@@ -213,14 +223,22 @@ function nextQuestion(auto){
 function finish(){
   clearInterval(timerInt);
   const p=Math.round((score/selectedQ.length)*100);
-  let msg=p>=80?"Plasma Champion!":p>=50?"Not bad":"Keep learning!";
-  
+  let msg="";
+  if(p<20) msg="I think you should try Billions.";
+  else if(p<30) msg="Are you sure you want Trillions?";
+  else if(p<40) msg="If this were a pop quiz, you’re getting an F!";
+  else if(p<50) msg="Keep Learning, you’re getting there.";
+  else if(p<60) msg="The average guy (Trillions is not average btw).";
+  else if(p<70) msg="You’re pretrillions material, work harder!";
+  else if(p<100) msg="pretrillions confirmed.";
+  else msg="Trillions.";
+
   const box=document.getElementById("score-box");
   box.innerHTML=`<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
-  
-  box.style.opacity = 1;
-  document.body.style.transition = "background 1s ease";
-  document.body.style.background = "var(--plasma-green)";
+  box.classList.add("show");
+
+  // Transition background gently to green
+  document.body.style.background = "#0F2F29";
 }
 </script>
 </body>
