@@ -14,6 +14,8 @@
       margin: 0;
       font-family: Arial, sans-serif;
       background: url('back.png') no-repeat center center/cover;
+      background-attachment: fixed;
+      background-size: cover;
       color: var(--plasma-white);
     }
 
@@ -85,6 +87,10 @@
         padding: 10px 15px;
       }
 
+      #plasma-header img {
+        height: 45px;
+      }
+
       #plasma-header h2 {
         font-size: 20px;
       }
@@ -96,7 +102,7 @@
   </style>
 </head>
 <body>
-  <div id="plasma-header" style="text-align:center; margin-top:40px;">
+  <div id="plasma-header" style="text-align:center; margin:20px 0;">
     <img src="plasma-logo.png" alt="Plasma Logo" style="height:60px; display:block; margin:0 auto 10px; border-radius:50%;" />
     <h2 style="margin:0; color:white;">Plasma Quiz</h2>
     <p style="margin:0; color:white; font-size:14px;">How well do you know plasma?</p>
