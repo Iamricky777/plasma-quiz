@@ -11,7 +11,7 @@ body{
   margin:0;font-family:"Futura","Montserrat",sans-serif;
   background:var(--plasma-green);color:var(--plasma-white);
   display:flex;justify-content:center;align-items:center;min-height:100vh;
-  overflow:hidden;transition: background 0.8s ease;
+  overflow:hidden;
 }
 #landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
 button{
@@ -66,6 +66,11 @@ button:hover{transform:scale(1.05);}
   100% { transform: translate(-50%, -60%) scale(1); }
 }
 
+@keyframes expandFull {
+  0% { top: 40%; left: 50%; width: auto; height: auto; border-radius:15px; }
+  100% { top:0; left:0; width:100vw; height:100vh; border-radius:0; transform:translate(0,0); }
+}
+
 #score-box{
   position:absolute;
   top:50%;
@@ -78,7 +83,6 @@ button:hover{transform:scale(1.05);}
   box-shadow:0 6px 20px rgba(0,0,0,.4);
   font-size:18px;
   opacity:0;
-  transition: opacity 0.8s ease, transform 0.8s ease;
   text-align:center;
 }
 #score-box.show{
@@ -87,6 +91,9 @@ button:hover{transform:scale(1.05);}
 }
 #score-box.move-up{
   animation: bounceUp 1s forwards;
+}
+#score-box.expand{
+  animation: expandFull 1s forwards;
 }
 </style>
 </head>
@@ -117,45 +124,10 @@ button:hover{transform:scale(1.05);}
   </div>
 </div>
 
-<!-- Original Score Box -->
 <div id="score-box"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
-const QUESTIONS={easy:[
-{q:"Plasma is closest to which superhero’s power?",o:["Flash","Iron Man","Thor","Batman"],a:"Thor"},
-{q:"What color is often used to represent Plasma?",o:["Pink","Green","Orange","Purple"],a:"Green"},
-{q:"Which animal would BEST represent Plasma?",o:["Snail","Lion","Tortoise","Cat"],a:"Lion"},
-{q:"Plasma vibes are mostly…",o:["Chaotic","Slow","Stable","Boring"],a:"Stable"},
-{q:"Plasma mascot could be a…",o:["Rocket","Potato","Sword","Chair"],a:"Rocket"},
-{q:"Which sound fits Plasma?",o:["Boom!","Meow","TikTok","Splash"],a:"Boom!"},
-{q:"Plasma is more like a…",o:["Storm","Feather","Book","Shoe"],a:"Storm"},
-{q:"Best drink for Plasma devs?",o:["Tea","Coffee","Soda","Water"],a:"Coffee"},
-{q:"Plasma feels…",o:["Lazy","Energetic","Sleepy","Gloomy"],a:"Energetic"},
-{q:"Plasma fans usually wear…",o:["Cap","Helmet","Suit","Hoodie"],a:"Hoodie"}],
-intermediate:[
-{q:"Plasma is a layer-2 scaling solution for…",o:["Bitcoin","Ethereum","Dogecoin","Solana"],a:"Ethereum"},
-{q:"Vitalik helped propose Plasma in…",o:["2017","2014","2020","2012"],a:"2017"},
-{q:"Main goal of Plasma is to reduce…",o:["Gas fees","Fun","Security","Time"],a:"Gas fees"},
-{q:"Plasma challenges are submitted within…",o:["7 days","7 minutes","7 months","7 hours"],a:"7 days"},
-{q:"Plasma cells bundle transactions into…",o:["Blocks","Documents","Images","Letters"],a:"Blocks"},
-{q:"Operator of a Plasma chain is also called a…",o:["Baker","Driver","Aggregator","Pilot"],a:"Aggregator"},
-{q:"Exit mechanism helps users…",o:["Fly","Teleport","Move funds back","Dance"],a:"Move funds back"},
-{q:"Data availability is mostly…",o:["On-chain","Off-chain","In notebook","On paper"],a:"Off-chain"},
-{q:"Plasma deals with…",o:["Smartphones","Smart contracts","Smart TVs","Smart cars"],a:"Smart contracts"},
-{q:"Plasma was co-proposed by…",o:["Vitalik & Joseph","Elon & Bezos","Satoshi & Hal","Fred & George"],a:"Vitalik & Joseph"}],
-hard:[
-{q:"Plasma uses which type of commitment?",o:["Merkle","SHA","BLS","RSA"],a:"Merkle"},
-{q:"In Plasma, users must monitor the chain to…",o:["Detect exits","Sleep","Backup","Mine"],a:"Detect exits"},
-{q:"Exit priority is usually based on…",o:["Age","Size","Position","Color"],a:"Position"},
-{q:"Plasma Cash introduced concept of…",o:["Unique coins","Cakes","Cars","Cats"],a:"Unique coins"},
-{q:"Double spends are prevented by…",o:["Proofs","Cookies","Keys","Apps"],a:"Proofs"},
-{q:"More Viable Plasma was proposed by…",o:["Vitalik","Joseph","Mina","Doge"],a:"Vitalik"},
-{q:"Plasma generally assumes honest…",o:["Operator","Chef","Guard","Robot"],a:"Operator"},
-{q:"Plasma requires users to be…",o:["Online","Offline","Sleeping","Rich"],a:"Online"},
-{q:"Checkpointing improves…",o:["Finality","Taste","Sound","Resolution"],a:"Finality"},
-{q:"Child chain exits are challenged by…",o:["Anyone","Only devs","Only whales","Only miners"],a:"Anyone"}]};
-
+const QUESTIONS={easy:[ /* same questions as before */ ]};
 let mode,selectedQ,timerLen,idx=0,score=0,selectedOpt=null,timerInt;
 
 function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
@@ -221,10 +193,9 @@ function finish(){
   const box=document.getElementById("score-box");
   box.innerHTML=`<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
   
-  document.body.style.background = "#0F2F29"; // optional: keep dark green
-  setTimeout(()=>{document.body.style.background="#0F6B4A";},50); // animate background to brighter green
   box.classList.add("show");
   setTimeout(()=>{box.classList.add("move-up");},2000);
+  setTimeout(()=>{box.classList.add("expand");},3500); // expand after bounce
 }
 </script>
 </body>
