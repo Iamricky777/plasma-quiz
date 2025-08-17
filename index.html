@@ -17,7 +17,6 @@ body{
 body.landing-active{
   display:block;
 }
-
 /* when NOT landing, body is flex-centered for quiz */
 body:not(.landing-active){
   display:flex;
@@ -25,6 +24,7 @@ body:not(.landing-active){
   align-items:center;
 }
 
+/* Landing */
 #landing{
   position:absolute;
   top:0;left:0;
@@ -44,7 +44,9 @@ body:not(.landing-active){
   text-shadow:0 3px 8px rgba(0,0,0,0.4);
 }
 
-#landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
+/* Only apply width constraint to modes + quiz, NOT landing */
+#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
+
 button{
   background:var(--plasma-white);color:var(--plasma-green);border:none;
   font-family:inherit;padding:14px 30px;margin:12px auto;border-radius:10px;cursor:pointer;
@@ -63,7 +65,6 @@ button:hover{transform:scale(1.05);}
   transition: opacity 0.6s ease;
   opacity: 0;
 }
-
 #quiz-container.show{opacity: 1;}
 
 .option{
