@@ -13,6 +13,24 @@ body{
   display:flex;justify-content:center;align-items:center;min-height:100vh;
   overflow:hidden;
 }
+
+/* LANDING PAGE CHANGED ONLY */
+#landing{
+  background:url('front.png') no-repeat center center/cover;
+  width:100%;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+#landing h1{
+  font-size:40px;
+  margin:0 0 25px 0;
+  color:#fff;
+  text-shadow:0 3px 8px rgba(0,0,0,0.4);
+}
+
 #landing,#modes,#quiz-container{width:90%;max-width:500px;text-align:center;}
 button{
   background:var(--plasma-white);color:var(--plasma-green);border:none;
@@ -76,8 +94,6 @@ button:hover{transform:scale(1.05);}
   box-shadow:0 6px 20px rgba(0,0,0,.4);
   transition: opacity 0.6s ease, background 1s ease;
 }
-
-/* Make restart button left-aligned and match card style */
 #score-box button{
   margin-top:15px;
   background: rgba(255,255,255,0.8);
@@ -91,13 +107,12 @@ button:hover{transform:scale(1.05);}
 #score-box button:hover{
   background: rgba(255,255,255,1);
 }
-
 </style>
 </head>
 <body>
 
 <div id="landing">
-  <h1>How well do you know Plasma?</h1>
+  <h1>Are you Trillions Material?</h1>
   <button onclick="showModes()">Start Quiz</button>
 </div>
 
@@ -155,7 +170,7 @@ const QUESTIONS = {
 
 let mode, selectedQ, timerLen, idx=0, score=0, selectedOpt=null, timerInt;
 
-function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
+function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block");}
 function exitQuiz(){ if(confirm("Are you sure you want to exit the quiz?")){clearInterval(timerInt); location.reload(); } }
 
 function startQuiz(m){
@@ -224,12 +239,10 @@ function finish(){
   else if(p < 100) msg = "pretrillions confirmed.";
   else if(p === 100) msg = "Trillions.";
 
-  const box = document.getElementById("score-box");
+  const box=document.getElementById("score-box");
   box.innerHTML = `<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
   
   box.style.opacity = 1;
-  document.body.style.transition = "background 1s ease";
-  document.body.style.background = "var(--plasma-green)";
 }
 </script>
 </body>
