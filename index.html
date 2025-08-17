@@ -10,15 +10,24 @@
 body{
   margin:0;font-family:"Futura","Montserrat",sans-serif;
   background:var(--plasma-green);color:var(--plasma-white);
-  display:flex;justify-content:center;align-items:center;min-height:100vh;
   overflow:hidden;
-  position:relative; /* added */
+  min-height:100vh;
+}
+/* body behaves normally (block layout) during landing */
+body.landing-active{
+  display:block;
 }
 
-/* LANDING PAGE FIXED */
+/* when NOT landing, body is flex-centered for quiz */
+body:not(.landing-active){
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
 #landing{
-  position:absolute; 
-  top:0; left:0;
+  position:absolute;
+  top:0;left:0;
   width:100%;
   height:100vh;
   background:url('front.png') no-repeat center center/cover;
@@ -55,9 +64,7 @@ button:hover{transform:scale(1.05);}
   opacity: 0;
 }
 
-#quiz-container.show{
-  opacity: 1;
-}
+#quiz-container.show{opacity: 1;}
 
 .option{
   border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:8px;cursor:pointer;
@@ -80,7 +87,6 @@ button:hover{transform:scale(1.05);}
   position:absolute;left:50%;top:3px;transform:translateX(-50%);color:#000;font-size:14px;
 }
 
-/* Score box with background image and left-aligned content */
 #score-box{
   position:absolute;
   top:50%;
@@ -96,10 +102,8 @@ button:hover{transform:scale(1.05);}
   font-size:18px;
   opacity:0;
   box-shadow:0 6px 20px rgba(0,0,0,.4);
-  transition: opacity 0.6s ease, background 1s ease;
+  transition: opacity 0.6s ease;
 }
-
-/* Make restart button left-aligned and match card style */
 #score-box button{
   margin-top:15px;
   background: rgba(255,255,255,0.8);
@@ -110,12 +114,10 @@ button:hover{transform:scale(1.05);}
   cursor:pointer;
   font-size:16px;
 }
-#score-box button:hover{
-  background: rgba(255,255,255,1);
-}
+#score-box button:hover{background:#ffffff;}
 </style>
 </head>
-<body>
+<body class="landing-active">
 
 <div id="landing">
   <h1>Are you Trillions Material?</h1>
@@ -176,7 +178,11 @@ const QUESTIONS = {
 
 let mode, selectedQ, timerLen, idx=0, score=0, selectedOpt=null, timerInt;
 
-function showModes(){document.getElementById("landing").style.display="none";document.getElementById("modes").style.display="block";}
+function showModes(){
+  document.body.classList.remove('landing-active');
+  document.getElementById("landing").style.display="none";
+  document.getElementById("modes").style.display="block";
+}
 function exitQuiz(){ if(confirm("Are you sure you want to exit the quiz?")){clearInterval(timerInt); location.reload(); } }
 
 function startQuiz(m){
