@@ -254,6 +254,8 @@ function finish(){
   else if(p < 100) msg = "pretrillions confirmed.";
   else if(p === 100) msg = "Trillions.";
 
+  document.getElementById("quiz-container").style.display = "none"; // <<< HIDE QUIZ
+
   const box=document.getElementById("score-box");
   box.innerHTML = `<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
   
