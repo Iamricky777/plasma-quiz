@@ -63,9 +63,6 @@ button:hover{transform:scale(1.05);}
   height:100%;width:0;background:var(--plasma-green);transition:width .3s;border-radius:6px;
   display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:14px;
 }
-.progress-text{
-  position:absolute;left:50%;top:3px;transform:translateX(-50%);color:#000;font-size:14px;
-}
 
 #score-box{
   position:absolute;top:50%;left:50%;transform: translate(-50%, -50%);
@@ -209,17 +206,15 @@ function finish(){
   if(p < 20) msg = "I think you should try Billions.";
   else if(p < 30) msg = "Are you sure you want Trillions?";
   else if(p < 40) msg = "If this were a pop quiz, you’re getting an F!";
-  else if(p < 50) msg = "Keep Learning, you’re getting there.";
+  else if(p < 50) msg = "Keep Learning,你’re getting there.";
   else if(p < 60) msg = "The average guy (Trillions is not average btw).";
   else if(p < 70) msg = "You’re pretrillions material, work harder!";
   else if(p < 100) msg = "pretrillions confirmed.";
   else if(p === 100) msg = "Trillions.";
 
-  // keep white quiz box behind – just hide text/content
-  document.getElementById("quiz-container").style.visibility = "hidden";
-
   const box=document.getElementById("score-box");
   box.innerHTML = `<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
+  box.style.zIndex="999";
   box.style.opacity = 1;
 }
 </script>
