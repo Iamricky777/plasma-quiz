@@ -107,6 +107,8 @@ button:hover{transform:scale(1.05);}
 
 <div id="score-box"></div>
 
+<audio id="tickSound" src="tick.mp3" preload="auto" loop></audio>
+
 <script>
 
 const QUESTIONS = {
@@ -286,7 +288,7 @@ function startQuiz(m){
   const opt=document.getElementById("options");
   opt.innerHTML="";
   
-  // ✨ shuffle options so A/B/C/D are random each time
+  // Shuffle the answer options each time
   const shuffled = q.o.slice().sort(() => 0.5 - Math.random());
   shuffled.forEach(o=>{
     const d=document.createElement("div"); d.className="option"; d.innerText=o;
@@ -303,11 +305,20 @@ function startQuiz(m){
 
   let t=timerLen;
   document.getElementById("timer").innerText="Time: "+t+"s";
-  timerInt=setInterval(()=>{
+
+  // Start ticking sound loop
+  const audio = document.getElementById("tickSound");
+  if(audio){
+    audio.currentTime = 0;
+    audio.play();
+  }
+
+  timerInt = setInterval(()=>{
     t--;
     document.getElementById("timer").innerText="Time: "+t+"s";
     if(t<=0){
       clearInterval(timerInt);
+      if(audio) audio.pause(); // Stop ticking sound
       nextQuestion(true);
     }
   },1000);
@@ -353,5 +364,6 @@ function finish(){
 </script>
 </body>
 </html>
+
 
 
