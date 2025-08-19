@@ -276,15 +276,19 @@ function startQuiz(m){
   }
   showQ();
 }
-
-function showQ(){
+  
+  function showQ(){
   if(timerInt) clearInterval(timerInt);
   if(idx>=selectedQ.length){finish(); return;}
   const q=selectedQ[idx];
   document.getElementById("question").innerText=q.q;
+  
   const opt=document.getElementById("options");
   opt.innerHTML="";
-  q.o.forEach(o=>{
+  
+  // ✨ shuffle options so A/B/C/D are random each time
+  const shuffled = q.o.slice().sort(() => 0.5 - Math.random());
+  shuffled.forEach(o=>{
     const d=document.createElement("div"); d.className="option"; d.innerText=o;
     d.onclick=()=>{
       selectedOpt=o;
@@ -293,6 +297,7 @@ function showQ(){
     };
     opt.appendChild(d);
   });
+  
   document.getElementById("pbar").style.width=(idx/selectedQ.length)*100+"%";
   document.getElementById("progressLabel").innerText=`${idx+1}/${selectedQ.length}`;
 
@@ -348,4 +353,5 @@ function finish(){
 </script>
 </body>
 </html>
+
 
