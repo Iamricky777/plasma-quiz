@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Trillions alignment checker</title>
+<title>Plasma Knowledge Tests</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
 :root { --plasma-green:#0F2F29; --plasma-white:#ffffff;}
@@ -108,35 +108,139 @@ button:hover{transform:scale(1.05);}
 <div id="score-box"></div>
 
 <script>
+
 const QUESTIONS = {
-  easy:[
-    {q:"Plasma is the ___ state of matter?", o:["First","Second","Fourth","Third"], a:"Fourth"},
-    {q:"Plasma is mostly made of?", o:["Atoms","Ions & electrons","Molecules","Neutrons"], a:"Ions & electrons"},
-    {q:"The Sun is made of?", o:["Gas","Liquid","Plasma","Solid"], a:"Plasma"},
-    {q:"Plasma conducts?", o:["Electricity","Nothing","Water","Light"], a:"Electricity"},
-    {q:"Lightning is a type of?", o:["Gas","Plasma","Water","Ice"], a:"Plasma"},
-    {q:"Neon signs glow due to?", o:["Plasma","Gas","Liquid","Solid"], a:"Plasma"},
-    {q:"Aurora borealis is?", o:["Gas","Liquid","Plasma","Solid"], a:"Plasma"},
-    {q:"Plasma can be created using?", o:["Heat","Pressure","Magnetism","Electricity"], a:"Electricity"},
-    {q:"Plasma TVs use?", o:["Plasma","LED","LCD","OLED"], a:"Plasma"},
-    {q:"Plasma is influenced by?", o:["Gravity","Electric & Magnetic fields","Sound","None"], a:"Electric & Magnetic fields"}
+  easy: [
+    /* 1–33 */
+    {q:"Plasma is designed as a stablecoin-first blockchain, meaning it prioritizes what kind of asset in its transaction layer?", o:["Traditional fiat currencies","Algorithmic tokens backed by volatile reserves","Native stablecoins such as USD₮","Layer 0 governance tokens"], a:"Native stablecoins such as USD₮"},
+    {q:"The Plasma blockchain eliminates gas fees for certain transfers, specifically enabling which capability for end-users?", o:["Free confidential NFT minting","Zero-fee stablecoin payments","Unlimited free contract deployment","Free bridging of all assets"], a:"Zero-fee stablecoin payments"},
+    {q:"Plasma’s throughput advantage is tied to its architectural choice of being optimized around what?", o:["Off-chain computation outsourcing","Stablecoin settlement and high-frequency payments","Randomized leader election per block","Native staking of wrapped Bitcoin"], a:"Stablecoin settlement and high-frequency payments"},
+    {q:"Developers can interact with Plasma using Ethereum developer tools like Hardhat or Foundry because Plasma is what?", o:["Built on Bitcoin Script","A full clone of Solana runtime","EVM-compatible","Dependent on Cosmos SDK"], a:"EVM-compatible"},
+    {q:"Which built-in feature allows businesses to customize how transaction costs are absorbed within their dApps?", o:["Mandatory staking pools","Custom gas tokens","Proof-of-storage mining","Governance-based subsidies"], a:"Custom gas tokens"},
+    {q:"Plasma integrates a privacy option for certain transactions, enabling what unique type of transfer?", o:["Blind auctions for NFTs","Zero-knowledge rollups of Bitcoin","Confidential stablecoin payments","Post-quantum multisig transactions"], a:"Confidential stablecoin payments"},
+    {q:"A distinguishing infrastructure feature of Plasma is its native Bitcoin bridge, which is best described as what?", o:["A trust-minimized way to bring BTC into Plasma","A centralized swap run by a single custodian","A wrapped BTC copy running on Solana","A custodial account on Binance"], a:"A trust-minimized way to bring BTC into Plasma"},
+    {q:"Plasma’s launch liquidity included over how much value in stablecoins available for immediate use?", o:["$100 million","$500 million","$1 billion","$10 billion"], a:"$1 billion"},
+    {q:"Which of the following is part of Plasma’s compliance-ready infrastructure for institutions?", o:["Default anonymous mixers","Built-in KYC/AML tooling","Permissioned validator licensing only","On-chain proof of humanity"], a:"Built-in KYC/AML tooling"},
+    {q:"Plasma aims to anchor security by linking to Bitcoin in which way?", o:["Running Bitcoin as a sidechain","Using trust-minimized Bitcoin bridging and anchoring","Replacing proof-of-stake with Bitcoin mining","Forking Bitcoin’s consensus rules"], a:"Using trust-minimized Bitcoin bridging and anchoring"},
+    {q:"Which major exchange and stablecoin issuer was among the earliest backers of Plasma?", o:["Kraken","Bitfinex","Coinbase","Gemini"], a:"Bitfinex"},
+    {q:"Which prominent VC fund, also an early investor in Facebook, supported Plasma’s development?", o:["a16z","Founders Fund","Sequoia Capital","Paradigm"], a:"Founders Fund"},
+    {q:"The analytics platform that publicly tracks Plasma activity and supports transparency in the ecosystem is?", o:["Arkham Intelligence","Dune Analytics","Nansen","Glassnode"], a:"Arkham Intelligence"},
+    {q:"Plasma has been connected in conversations with major DeFi protocols, with one of the most notable being?", o:["Aave","Compound","MakerDAO","Curve"], a:"Aave"},
+    {q:"Which company was mentioned in Plasma’s ecosystem as a compliance-infrastructure partner?", o:["Chainalysis","Blockstream","Ledger","StarkWare"], a:"Chainalysis"},
+    {q:"Plasma announced its public testnet in mid-2024 primarily to let developers test what?", o:["NFT auctions","Stablecoin transactions and dApp deployment","Proof-of-stake validator licensing","Cross-chain meme token swaps"], a:"Stablecoin transactions and dApp deployment"},
+    {q:"The Plasma team announced that its first billion in liquidity would be denominated in which asset?", o:["Wrapped Bitcoin","Tether USD₮","USDC exclusively","Dai stablecoin"], a:"Tether USD₮"},
+    {q:"A recent Plasma X update highlighted that developers could deploy Ethereum contracts without needing what?", o:["Solana SDK integration","Custom bytecode modification","Gas fee calculations for stablecoin transfers","Forking the validator client"], a:"Gas fee calculations for stablecoin transfers"},
+    {q:"In their X threads, Plasma’s team compared their network to AWS for finance, emphasizing what key idea?", o:["That Plasma is a decentralized compute cloud for stablecoin payments","That Plasma is a centralized API service like Stripe","That Plasma is only useful for NFT gaming","That Plasma replaces Bitcoin as money"], a:"That Plasma is a decentralized compute cloud for stablecoin payments"},
+    {q:"Plasma’s early ecosystem grants targeted projects building in which areas?", o:["Stablecoin payments and on/off-ramps","NFT profile picture collections","GameFi slot machines","SocialFi meme platforms"], a:"Stablecoin payments and on/off-ramps"},
+    {q:"Plasma enables transactions far beyond traditional blockchains because it optimizes around what specific bottleneck?", o:["Reducing validator hardware costs","Stablecoin settlement throughput","Minimizing staking rewards","Limiting block size"], a:"Stablecoin settlement throughput"},
+    {q:"Which best explains why Plasma can handle billions in stablecoin liquidity without congesting its network?", o:["Avoiding smart contracts entirely","Zero-fee transfers and high throughput design","Requiring validators to stake BTC","Running on Solana codebase"], a:"Zero-fee transfers and high throughput design"},
+    {q:"Developers choosing Plasma for payments benefit from its EVM compatibility since it allows them to do what?", o:["Deploy Ethereum smart contracts without rewriting","Run Rust contracts for Solana","Port Cosmos SDK modules","Import Polkadot runtimes"], a:"Deploy Ethereum smart contracts without rewriting"},
+    {q:"The Plasma blockchain supports confidential transfers for which type of adoption?", o:["Enterprises requiring regulatory compliance","NFT gaming platforms","Meme token campaigns","Spam-resistant voting"], a:"Enterprises requiring regulatory compliance"},
+    {q:"Plasma’s Bitcoin bridge avoids what risk common in other bridges?", o:["Overuse of gas tokens","Reliance on a centralized custodian","Automatic transaction batching","Layer 0 reward slashing"], a:"Reliance on a centralized custodian"},
+    {q:"Which design feature of Plasma appeals to fintechs and payment apps?", o:["Zero-fee stablecoin-native transfers","Reliance on meme token markets","Focus on metaverse assets","In-built lottery mechanism"], a:"Zero-fee stablecoin-native transfers"},
+    {q:"Plasma infrastructure integrates compliance tooling enabling institutions to what?", o:["Conduct regulatory reporting alongside transactions","Automatically mint governance tokens per user","Avoid monitoring flows entirely","Run validators w/o licenses"], a:"Conduct regulatory reporting alongside transactions"},
+    {q:"Plasma’s developer experience is strengthened by having RPC references available, meaning what?", o:["Developers can query using familiar Ethereum-style APIs","RPC calls are disabled for security","Only Bitcoin Script calls permitted","RPC is for staking-only"], a:"Developers can query using familiar Ethereum-style APIs"},
+    {q:"Plasma highlights 'tooling & infrastructure' referring to what?", o:["Developer libraries, explorers, oracles, analytics","Centralized dashboards","Pure hardware mining rigs","NFT auction websites"], a:"Developer libraries, explorers, oracles, analytics"},
+    {q:"Plasma scalability claims rival which traditional networks' performance?", o:["Visa & Mastercard","P2P file sharing","African stock exchanges","Decentralized gaming servers"], a:"Visa & Mastercard"},
+    {q:"Which of these is part of the $20m+ seed round backing Plasma’s development?", o:["Founders Fund and Bitfinex","Binance Labs & Animoca","Solana Ventures & Polygon","MetaMask & Uniswap"], a:"Founders Fund and Bitfinex"},
+    {q:"Arkham Intelligence’s involvement in Plasma is tied to what?", o:["Providing transparency analytics","Building NFT marketplaces","Running validator monopoly","Offering off-chain fiat rails"], a:"Providing transparency analytics"},
+    {q:"Plasma’s team mentions collaboration with Aave which would expand what?", o:["Stablecoin lending on Plasma","Meme token staking farms","NFT marketplace royalties","SocialFi token launches"], a:"Stablecoin lending on Plasma"}
   ],
-  intermediate:[
-    {q:"Intermediate Q1?", o:["A","B","C","D"], a:"A"},
-    {q:"Intermediate Q2?", o:["A","B","C","D"], a:"B"},
-    {q:"Intermediate Q3?", o:["A","B","C","D"], a:"C"},
-    {q:"Intermediate Q4?", o:["A","B","C","D"], a:"D"},
-    {q:"Intermediate Q5?", o:["A","B","C","D"], a:"A"},
+
+    intermediate: [
+    {q:"Chainalysis’ partnership role with Plasma supports which group of users the most?",o:["Institutional participants requiring compliance tools","Retail traders collecting meme tokens","DAO members in governance voting","NFT artists on marketplaces"],a:"Institutional participants requiring compliance tools"},
+    {q:"Bitfinex’s support of Plasma strategically matters because Bitfinex also issues what?",o:["USD₮ (Tether stablecoin)","Dogecoin","Wrapped Ethereum","DAI"],a:"USD₮ (Tether stablecoin)"},
+    {q:"Plasma’s X updates emphasize that their blockchain is built primarily for what?",o:["Stablecoin payments at global scale","Meme coin lotteries","PFP collections","Gaming tokens"],a:"Stablecoin payments at global scale"},
+    {q:"In mid-2024, Plasma framed their network as 'AWS for finance,' highlighting what?",o:["That developers can build financial applications at scale","That Plasma provides centralized cloud servers","That Plasma only hosts websites","That Plasma runs on AWS itself"],a:"That developers can build financial applications at scale"},
+    {q:"The $1B liquidity announcement highlighted why the ecosystem was ready for which outcome?",o:["Massive stablecoin transaction adoption","NFT-only auctions","Validator license sales","Meme token farming"],a:"Massive stablecoin transaction adoption"},
+    {q:"Developers testing Plasma’s early testnet discovered they could migrate contracts easily due to what?",o:["Plasma’s EVM compatibility","A mandatory Solana bridge","Bitcoin-only scripting","Lack of smart contract support"],a:"Plasma’s EVM compatibility"},
+    {q:"The Plasma team frames their vision in contrast to slow blockchains, instead promoting what?",o:["Fast, zero-fee stablecoin transactions","High-yield staking rewards only","NFT gaming dominance","Meme coin casinos"],a:"Fast, zero-fee stablecoin transactions"},
+    {q:"Plasma emphasizes settlement finality by leveraging what?",o:["Anchoring blocks into Bitcoin for additional security","Running as a Bitcoin sidechain","Mining Bitcoin blocks directly","Using Bitcoin addresses for validator IDs"],a:"Anchoring blocks into Bitcoin for additional security"},
+    {q:"Which aspect of Plasma’s consensus supports global-scale stablecoin adoption?",o:["High throughput validation focused on payments","Proof-of-work energy optimization","Randomized validator licensing","Governance through NFTs"],a:"High throughput validation focused on payments"},
+    {q:"Unlike modular blockchains that separate execution and DA, Plasma focuses primarily on what?",o:["Integrated execution for stablecoin transfers","Offloading execution to Solana","Storing all data in external oracles","Pure settlement-only design"],a:"Integrated execution for stablecoin transfers"},
+    {q:"Custom gas tokens on Plasma benefit what kind of businesses most?",o:["Consumer-facing apps seeking smoother onboarding","Hardware manufacturers","NFT profile-picture creators","Meme trading apps"],a:"Consumer-facing apps seeking smoother onboarding"},
+    {q:"Confidential payments on Plasma are enabled by cryptographic methods appealing especially to which audience?",o:["Enterprises needing both privacy and compliance","Meme coin traders on Telegram","NFT raffle organizers","Spam-resistant DAOs"],a:"Enterprises needing both privacy and compliance"},
+    {q:"Plasma’s native bridge is distinct because it reduces dependency on what?",o:["Centralized custodians","Validator staking pools","On-chain voting mechanisms","NFT marketplaces"],a:"Centralized custodians"},
+    {q:"Plasma describes its scalability as a path to handle billions, drawing comparison to which networks?",o:["Visa and Mastercard","Twitch and YouTube","BSC and Polygon","Filecoin and Arweave"],a:"Visa and Mastercard"},
+    {q:"The RPC references in Plasma’s docs allow developers to do what in practice?",o:["Interact programmatically using Ethereum-like APIs","Disable transactions temporarily","Run mining software from RPC","Remove validators directly"],a:"Interact programmatically using Ethereum-like APIs"},
+    {q:"Plasma avoids reliance on which type of tokens for adoption?",o:["Volatile governance or utility tokens","Fiat currencies held in banks","Meme coins as collateral","Energy-backed tokens"],a:"Volatile governance or utility tokens"}
+
+  {q:"Plasma’s gasless stablecoin transfers directly improve which critical factor for financial inclusion?",o:["Lowering costs for end users","Increasing meme coin speculation","Guaranteeing NFT royalties","Running validator nodes"],a:"Lowering costs for end users"},
+  {q:"Plasma integrates oracles and analytics in its tooling suite, which developers can leverage for what?",o:["Real-time data feeds and visibility into payments","NFT rarity scoring","Meme price alerts","Proof-of-work difficulty tracking"],a:"Real-time data feeds and visibility into payments"},
+  {q:"By designing for scale, Plasma’s architecture avoids what limitation that plagues other chains?",o:["Congestion from high gas fees","Lack of meme token liquidity","NFT metadata issues","DAO voting bottlenecks"],a:"Congestion from high gas fees"},
+  {q:"Plasma’s settlement anchoring to Bitcoin means even if validators fail, what remains?",o:["Security guarantees from Bitcoin’s base layer","NFT royalties across marketplaces","Meme token price floors","Cosmos interoperability"],a:"Security guarantees from Bitcoin’s base layer"},
+  {q:"The introduction of custom gas tokens provides developers flexibility in what?",o:["Designing dApps with subsidized transactions","Running NFTs with zero royalties","Mining stablecoins directly","Creating meme coins for free"],a:"Designing dApps with subsidized transactions"},
+  {q:"Plasma’s grants program emphasizes funding in which category?",o:["Stablecoin payment rails and on/off-ramps","Art-based NFTs","Meme token farms","Metaverse avatars"],a:"Stablecoin payment rails and on/off-ramps"},
+  {q:"The $1B liquidity at launch was proof that the network could handle what?",o:["Institutional-grade stablecoin settlement","Unlimited NFT auctions","Meme farming campaigns","On-chain gaming tournaments"],a:"Institutional-grade stablecoin settlement"},
+  {q:"Plasma’s 'AWS for finance' framing positions it as a competitor also to what?",o:["Centralized financial infrastructure providers","NFT marketplaces","Meme launchpads","Gaming servers"],a:"Centralized financial infrastructure providers"},
+  {q:"Plasma emphasizes solving what type of problems for adoption?",o:["Real payment problems rather than hype","NFT rarity disputes","Meme coin volatility","Validator reward disputes"],a:"Real payment problems rather than hype"},
+  {q:"Bitfinex’s support demonstrates alignment between Plasma and which resource?",o:["Stablecoin liquidity at exchange scale","NFT royalty enforcement","Meme token farming","Decentralized file storage"],a:"Stablecoin liquidity at exchange scale"},
+  {q:"Founders Fund’s investment signals Plasma is viewed as what type of opportunity?",o:["A frontier fintech infrastructure play","Collectible NFT gallery","Meme-first token","Web2 cloud app"],a:"A frontier fintech infrastructure play"},
+  {q:"Arkham Intelligence supports Plasma by providing what?",o:["Transparency and accountability","Meme coin volatility tracking","NFT rarity pricing","Proof-of-work efficiency"],a:"Transparency and accountability"},
+  {q:"If Aave integrates Plasma, what benefit would users gain?",o:["Lending & borrowing stablecoins","NFT metadata hosting","Meme token lotteries","DAO-only governance"],a:"Lending & borrowing stablecoins"},
+  {q:"Chainalysis benefits which stakeholder group most?",o:["Institutions requiring compliance-ready rails","Retail meme coin traders","NFT artists","Gaming DAOs"],a:"Institutions requiring compliance-ready rails"},
+  {q:"Plasma’s communication highlights it isn’t trying to be everything but rather dominate what?",o:["Stablecoin payments at scale","NFT profile pictures","Meme speculation","Cloud gaming"],a:"Stablecoin payments at scale"},
+  {q:"Plasma’s focus ensures users don’t need to manage what before transacting?",o:["Gas fees in volatile native tokens","Meme coin liquidity pools","NFT royalties","Proof-of-work setups"],a:"Gas fees in volatile native tokens"},
+  {q:"Confidential payments provide an advantage by balancing what needs?",o:["Privacy with regulatory compliance","NFT minting rarity","Meme anonymity","Validator reward control"],a:"Privacy with regulatory compliance"},
+  {q:"Plasma’s throughput achieves near-instant settlement rivaling what infrastructure?",o:["Credit card networks like Visa","NFT minting","Gaming ecosystems","Cloud file storage"],a:"Credit card networks like Visa"},
+  {q:"Which interface mimics Ethereum structure to lower barriers for builders?",o:["RPC interface on Plasma","Solana SDK","Cosmos RPC","Bitcoin Script"],a:"RPC interface on Plasma"},
+  {q:"A unique characteristic of Plasma’s Bitcoin bridge is minimizing reliance on what?",o:["Custodial wrapped BTC","Meme token pools","NFT escrow","On-chain lotteries"],a:"Custodial wrapped BTC"},
+  {q:"Plasma’s gasless stablecoin transfers lower what key factor?",o:["End-user transaction costs","Meme volatility","NFT royalties","Validator complexity"],a:"End-user transaction costs"},
+  {q:"Plasma integrates oracles for developers to use what?",o:["Real-time data feeds","NFT rarity data","Meme price data","Proof-of-work feeds"],a:"Real-time data feeds"},
+  {q:"Plasma avoids which common limitation?",o:["High gas congestion","Lack of memes","NFT storage issues","DAO spam"],a:"High gas congestion"},
+  {q:"Anchoring Plasma to Bitcoin preserves what?",o:["Security from Bitcoin base layer","NFT royalties","Meme price floors","Cosmos bridging"],a:"Security from Bitcoin base layer"},
+  {q:"Custom gas tokens allow developers flexibility in what?",o:["Subsidizing transactions","NFT royalties","Meme minting","Validator payouts"],a:"Subsidizing transactions"},
+  {q:"Plasma’s grants focus on what type of rails?",o:["Stablecoin payments","NFTs","Memes","Metaverse items"],a:"Stablecoin payments"},
+  {q:"$1B liquidity showcased readiness for what?",o:["Institutional settlement","NFT auctions","Meme pumps","Gaming"],a:"Institutional settlement"},
+  {q:"Plasma’s AWS framing competes with what?",o:["Centralized financial infrastructure","NFT platforms","Meme groups","Gaming servers"],a:"Centralized financial infrastructure"},
+  {q:"Adoption comes from solving what problems?",o:["Real-world payment problems","NFT hype","Meme trading","DAO complexity"],a:"Real-world payment problems"},
+  {q:"Plasma highlights adoption through which user?",o:["Everyday payment user","NFT trader","Meme influencer","DAO leader"],a:"Everyday payment user"},
+  {q:"Plasma isn’t trying to be everything but instead dominate what?",o:["Stablecoin payments","NFT PFPs","Meme speculation","Gaming"],a:"Stablecoin payments"}
   ],
-  hard:[
-    {q:"Hard Q1?", o:["A","B","C","D"], a:"A"},
-    {q:"Hard Q2?", o:["A","B","C","D"], a:"B"},
-    {q:"Hard Q3?", o:["A","B","C","D"], a:"C"},
-    {q:"Hard Q4?", o:["A","B","C","D"], a:"D"},
-    {q:"Hard Q5?", o:["A","B","C","D"], a:"A"},
+
+  hard: [
+    {q:"Plasma’s zero-fee design eliminates which major Ethereum pain point?", o:["High and unpredictable gas costs","NFT royalty bypass","Proof-of-work energy use","Difficulty running full nodes"], a:"High and unpredictable gas costs"},
+    {q:"Custom gas tokens on Plasma allow projects to what?",o:["Subsidize transaction costs for users","Ban stablecoin transfers","Replace validators with DAOs","Launch meme tokens for free"],a:"Subsidize transaction costs for users"},
+    {q:"Plasma’s design aligns most closely with which financial use?",o:["Everyday payments at scale","Collectible trading card NFTs","Meme coin yield-farming","Decentralized file storage"],a:"Everyday payments at scale"},
+    {q:"Plasma’s EVM compatibility reduces dev friction because it enables what?",o:["Direct porting of Ethereum contracts","Solana contract auto-conversion","Cosmos SDK module execution","Bitcoin Script replication"],a:"Direct porting of Ethereum contracts"},
+    {q:"Plasma’s confidentiality option is better described as what feature?",o:["Regulated privacy layer","Automatic meme cloaking","NFT rarity anonymization","Validator reward masking"],a:"Regulated privacy layer"},
+    {q:"Plasma’s scale target is compared to what?", o:["Visa-level transaction volume","OpenSea’s NFT trades","Filecoin storage","Ethereum staking volume"], a:"Visa-level transaction volume"},
+    {q:"Plasma anchors to Bitcoin by doing what?",o:["Periodically committing state into Bitcoin","Running a Lightning node","Replacing consensus with BTC mining","Staking wrapped BTC"],a:"Periodically committing state into Bitcoin"},
+    {q:"Plasma’s tooling suite (explorers, analytics, oracles) serves what purpose?",o:["Supporting developers and users with data feeds","Mining Bitcoin blocks","NFT rarity scoring","Meme coin price alerts"],a:"Supporting developers and users with data feeds"},
+    {q:"A benefit of Plasma for fintechs is users can onboard without understanding what?",o:["Gas fees or blockchain mechanics","Meme coin farming","NFT contracts","Validator rewards"],a:"Gas fees or blockchain mechanics"},
+    {q:"Plasma onboarding emphasizes RPC docs to enable what?",o:["Seamless dApp development with Ethereum tools","Restricting dev access to validators","Mining through RPC","NFT metadata uploads"],a:"Seamless dApp development with Ethereum tools"},
+    {q:"Plasma’s Bitcoin bridge avoids reliance on which model?",o:["Custodial wrapped BTC","NFT escrow","Meme token staking pools","Lottery governance"],a:"Custodial wrapped BTC"},
+    {q:"Gasless transfers improve which factor for inclusion?",o:["Lowering costs to end users","Increasing meme speculation","Guaranteeing NFT royalties","Running validators"],a:"Lowering costs to end users"},
+    {q:"Oracles & analytics help developers by providing what?",o:["Real-time payment visibility","NFT rarity data","Meme price feeds","Hash-rate feeds"],a:"Real-time payment visibility"},
+    {q:"Plasma’s architecture avoids what general-purpose chain limitation?",o:["Gas congestion","NFT storage issues","Lack of memes","DAO bottlenecks"],a:"Gas congestion"},
+    {q:"Anchoring into Bitcoin preserves what?",o:["Security from Bitcoin’s base layer","NFT royalties","Meme price floors","Cosmos interoperability"],a:"Security from Bitcoin’s base layer"},
+    {q:"Custom gas tokens add flexibility to what?",o:["Subsidized dApp transactions","NFT royalties","Meme minting","Validator payouts"],a:"Subsidized dApp transactions"},
+    {q:"Grants focus on builders of what?",o:["Stablecoin payment rails","NFTs","Memes","Metaverse assets"],a:"Stablecoin payment rails"},
+    {q:"Launch liquidity proof meant the network could handle what instantly?",o:["Institutional-grade settlement","Unlimited NFT auctions","Meme farming","Gaming traffic"],a:"Institutional-grade settlement"},
+    {q:"“AWS for finance” makes Plasma a competitor to what?",o:["Centralized financial infrastructure","NFT sites","Meme launchpads","Gaming servers"],a:"Centralized financial infrastructure"},
+    {q:"Adoption comes from solving what?",o:["Real-world payment issues","NFT hype cycles","Meme coins","DAO tooling"],a:"Real-world payment issues"},
+    {q:"Plasma targets adoption via which users?",o:["Everyday payment users","NFT flippers","Meme traders","DAO leaders"],a:"Everyday payment users"},
+    {q:"The consistent strategy is not to be everything, but to dominate what?",o:["Stablecoin payments at scale","NFT PFPs","Meme speculation","Cloud gaming"],a:"Stablecoin payments at scale"},
+    {q:"Plasma ensures users don’t need to manage what before making transactions?",o:["Gas in volatile native tokens","Meme pools","NFT royalties","Proof-of-work rigs"],a:"Gas in volatile native tokens"},
+    {q:"Confidential payments balance which two needs?",o:["Privacy and compliance","NFT minting and rarity","Meme anonymity","Validator control"],a:"Privacy and compliance"},
+    {q:"Throughput rivals what?",o:["Credit-card networks like Visa","NFT minting","Gaming servers","File storage networks"],a:"Credit-card networks like Visa"},
+    {q:"RPC structure lowers barrier for which group?",o:["Ethereum developers","Solana devs","Cosmos validators","NFT artists"],a:"Ethereum developers"},
+    {q:"Bridge minimizes reliance on what model?",o:["Custodial wrapped BTC","NFT escrow","Meme pools","Lottery governance"],a:"Custodial wrapped BTC"},
+    {q:"Gasless transfers improve what?",o:["End-user costs","NFT income","Meme hype","Validator UX"],a:"End-user costs"},
+    {q:"Oracles integrated give developers what?",o:["Real-time data feeds","NFT rarity","Meme feeds","Hash-rate feeds"],a:"Real-time data feeds"},
+    {q:"Avoiding congestion resolves issues from what?",o:["High gas fees","NFT storage","Meme liquidity","DAO votes"],a:"High gas fees"},
+    {q:"Bitcoin anchoring protects what?",o:["Security guarantees","NFT royalties","Meme floors","Cosmos bridges"],a:"Security guarantees"},
+    {q:"Custom gas tokens allow flexibility in what?",o:["Subsidizing user transactions","NFT royalties","Meme minting","Validator payments"],a:"Subsidizing user transactions"},
+    {q:"Plasma grants drive what category?",o:["Settlement/payment rails","NFT art","Memes","Metaverse"],a:"Settlement/payment rails"},
+    {q:"$1B liquidity proves readiness for what?",o:["Institutional settlement","NFT hype","Meme usage","Gaming"],a:"Institutional settlement"},
+    {q:"AWS-for-finance positions Plasma opposite to what?",o:["Centralized finance infra","NFT markets","Meme launchpads","Gaming"],a:"Centralized finance infrastructure"},
+    {q:"Adoption messaging revolves around solving what?",o:["Payments in real economy","NFT speculation","Meme use","DAO politics"],a:"Payments in real economy"},
+    {q:"Final strategy = dominate what corner of crypto space?",o:["Stablecoin payments","NFT PFPs","Meme speculation","GameFi"],a:"Stablecoin payments"}
   ]
 };
 
+/* -------------------------------------------------------------- */
+/* Do not change anything below unless modifying logic            */
 let mode, selectedQ, timerLen, idx=0, score=0, selectedOpt=null, timerInt;
 
 function showModes(){
@@ -144,7 +248,13 @@ function showModes(){
   document.getElementById("landing").style.display="none";
   document.getElementById("modes").style.display="block";
 }
-function exitQuiz(){ if(confirm("Are you sure you want to exit the quiz?")){clearInterval(timerInt); location.reload(); } }
+
+function exitQuiz(){
+  if(confirm("Are you sure you want to exit the quiz?")){
+    clearInterval(timerInt);
+    location.reload();
+  }
+}
 
 function startQuiz(m){
   mode=m; idx=0; score=0;
@@ -152,9 +262,19 @@ function startQuiz(m){
   const quiz = document.getElementById("quiz-container");
   quiz.style.display="block";
   setTimeout(()=>{quiz.classList.add("show");},50);
-  if(m==="easy"){selectedQ=[...QUESTIONS.easy]; timerLen=20;}
-  else if(m==="intermediate"){selectedQ=[...QUESTIONS.intermediate]; timerLen=15;}
-  else {selectedQ=[...QUESTIONS.hard]; timerLen=10;}
+
+  if(m==="easy"){
+    selectedQ=[...QUESTIONS.easy].sort(()=>0.5-Math.random()).slice(0,10);
+    timerLen=20;
+  }
+  else if(m==="intermediate"){
+    selectedQ=[...QUESTIONS.intermediate].sort(()=>0.5-Math.random()).slice(0,15);
+    timerLen=15;
+  }
+  else {
+    selectedQ=[...QUESTIONS.hard].sort(()=>0.5-Math.random()).slice(0,20);
+    timerLen=10;
+  }
   showQ();
 }
 
@@ -176,12 +296,16 @@ function showQ(){
   });
   document.getElementById("pbar").style.width=(idx/selectedQ.length)*100+"%";
   document.getElementById("progressLabel").innerText=`${idx+1}/${selectedQ.length}`;
-  
+
   let t=timerLen;
   document.getElementById("timer").innerText="Time: "+t+"s";
   timerInt=setInterval(()=>{
-    t--;document.getElementById("timer").innerText="Time: "+t+"s";
-    if(t<=0){clearInterval(timerInt);nextQuestion(true);}
+    t--;
+    document.getElementById("timer").innerText="Time: "+t+"s";
+    if(t<=0){
+      clearInterval(timerInt);
+      nextQuestion(true);
+    }
   },1000);
 }
 
@@ -189,7 +313,7 @@ function nextQuestion(auto){
   if(!auto && !selectedOpt){alert("Please select an option");return;}
   if(selectedOpt===selectedQ[idx].a)score++;
   selectedOpt=null; idx++;
-  
+
   const quiz=document.getElementById("quiz-container");
   quiz.style.opacity=0;
   setTimeout(()=>{
@@ -206,18 +330,22 @@ function finish(){
   if(p < 20) msg = "I think you should try Billions.";
   else if(p < 30) msg = "Are you sure you want Trillions?";
   else if(p < 40) msg = "If this were a pop quiz, you’re getting an F!";
-  else if(p < 50) msg = "Keep Learning,你’re getting there.";
+  else if(p < 50) msg = "Keep Learning, you’re getting there.";
   else if(p < 60) msg = "The average guy (Trillions is not average btw).";
   else if(p < 70) msg = "You’re pretrillions material, work harder!";
   else if(p < 100) msg = "pretrillions confirmed.";
   else if(p === 100) msg = "Trillions.";
 
   const box=document.getElementById("score-box");
-  box.innerHTML = `<h2>You scored ${score}/${selectedQ.length}</h2><h3>${p}%</h3><p><strong>${msg}</strong></p><button onclick="location.reload()">Restart</button>`;
+  box.innerHTML =
+   `<h2>You scored ${score}/${selectedQ.length}</h2>
+    <h3>${p}%</h3>
+    <p><strong>${msg}</strong></p>
+    <button onclick="location.reload()">Restart</button>`;
   box.style.zIndex="999";
   box.style.opacity = 1;
 }
+/* -------------------------------------------------------------- */
 </script>
 </body>
 </html>
-
